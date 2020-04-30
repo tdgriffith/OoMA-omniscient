@@ -1,4 +1,4 @@
-%% OMA with Complexity Plots for Average Over Subjects
+%% OMA with Complexity Plots for Average Over Subjects: ML heatmaps
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
@@ -509,7 +509,7 @@ for trial= 1:40
     saveas(gcf,filename)
     close all
     
-    %heatmaps for People
+    %heatmaps for Robuts
     norm_cov_theta=max(abs(theta_cov_mean), [],'all');
     theta_cov_mean_norm=theta_cov_mean/norm_cov_theta;
     
@@ -524,6 +524,7 @@ for trial= 1:40
     
     figure
     set(gcf,'units','points','position',[500,-300,700,700])
+    
     subplot(2,2,1)
     h_cov_meanmap=heatmap([rho_cov_mean,theta_cov_mean_norm]);
     h_cov_meanmap.Colormap=parula;
@@ -553,38 +554,18 @@ for trial= 1:40
     saveas(gcf,filename)
     close all
     
+    robot_map=[Phi_cov_3, Phi_data_3; Phi_n4_3; Phi_NeXT_3];
     figure
     set(gcf,'units','points','position',[500,-300,700,700])
-    subplot(2,2,1)
-    h_cov_hermmap=heatmap(Phi_cov_3);
-    h_cov_hermmap.Colormap=parula;
-    h_cov_hermmap.ColorbarVisible=0;
-    h_cov_hermmap.Title=['OMA-Covar Norm Ratio: ' num2str(cov_herm_ratio) ];
-    h_cov_hermmap.YLabel='Mode';
-    h_cov_hermmap.XLabel='Mode Component';
-    subplot(2,2,2)
-    h_data_hermmap=heatmap(Phi_data_3);
-    h_data_hermmap.Colormap=parula;
-    h_data_hermmap.ColorbarVisible=0;
-    h_data_hermmap.Title=['OMA-Data ' num2str(data_herm_ratio)];
-    h_data_hermmap.YLabel='Mode';
-    h_data_hermmap.XLabel='Mode Component';
-    subplot(2,2,3)
-    h_n4_hermmap=heatmap(Phi_n4_3);
-    h_n4_hermmap.Colormap=parula;
-    h_n4_hermmap.ColorbarVisible=0;
-    h_n4_hermmap.Title=['n4sid ' num2str(n4_herm_ratio)];
-    h_n4_hermmap.YLabel='Mode';
-    h_n4_hermmap.XLabel='Mode Component';
-    subplot(2,2,4)
-    h_NeXT_hermmap=heatmap(Phi_NeXT_3);
-    h_NeXT_hermmap.Colormap=parula;
-    h_NeXT_hermmap.ColorbarVisible=0;
-    h_NeXT_hermmap.Title=['NeXT-ERA ' num2str(NeXT_herm_ratio)];
-    h_NeXT_hermmap.YLabel='Mode';
-    h_NeXT_hermmap.XLabel='Mode Component';
-    sgtitle(join((['Heatmaps (Herm of A) for Emotion: ' onlineratings(trial)])))
-    filename=['export/hermA/T' num2str(trial),'hermofA_heat' ,extension]
+    h_hermmap=heatmap(robot_map);
+    h_hermmap.Colormap=parula;
+    h_hermmap.ColorbarVisible=0;
+%     h_hermmap.Title=['OMA-Covar Norm Ratio: ' num2str(cov_herm_ratio) ];
+%     h_hermmap.YLabel='Mode';
+%     h_hermmap.XLabel='Mode Component';
+    
+%    sgtitle(join((['Heatmaps (Herm of A) for Emotion: ' onlineratings(trial)])))
+    filename=['export/hermA/T' num2str(trial),'A_heat_ml' ,extension]
     saveas(gcf,filename)
     close all
     

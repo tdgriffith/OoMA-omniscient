@@ -1,4 +1,4 @@
-%% OMA with Complexity Plots for Average Over Subjects
+%% OMA with Complexity Plots for Average Over Subjects: ML heatmaps
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
@@ -159,75 +159,75 @@ for trial= 1:40
     norm_NeXT=max(abs(Phi_NeXT_mean), [], 'all');
     Phi_NeXT_mean=Phi_NeXT_mean/norm_NeXT;
 
-    figure
-    set(gcf,'units','points','position',[500,-300,700,700])
-
-    subplot(2,2,1)
-
-    for i=1:length(Phi_cov_mean)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_cov_mean(:,i),colors(i))
-        hold on
-    end
-    title('OMA-Covar')
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-
-
-    % OMA-data plot
-    subplot(2,2,2)
-
-    for i=1:length(Phi_data_mean)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_data_mean(:,i),colors(i))
-        hold on
-    end
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    title('OMA-Data')
-
-    % Plot n4sid
-    subplot(2,2,3)
-
-    for i=1:length(Phi_n4_mean(1,:))
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_n4_mean(:,i),colors(i))
-        hold on
-    end
-    title('n4sid')
-
-    %Plot NeXT-ERA
-    subplot(2,2,4)
-
-
-    for i=1:length(Phi_NeXT_mean(1,:))
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_NeXT_mean(:,i),colors(i))
-        hold on
-    end
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    title('NeXT-ERA')
-    
-    
-    sgtitle(join((['Eigenvector Complexity Plots (Averages) for Emotion: ' onlineratings(trial)])))
-    
-    filename=['export/averagePhi/T' num2str(trial),'avg' ,extension]
-    
-    saveas(gcf,filename)
-    close all
-    
+%     figure
+%     set(gcf,'units','points','position',[500,-300,700,700])
+% 
+%     subplot(2,2,1)
+% 
+%     for i=1:length(Phi_cov_mean)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_cov_mean(:,i),colors(i))
+%         hold on
+%     end
+%     title('OMA-Covar')
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+% 
+% 
+%     % OMA-data plot
+%     subplot(2,2,2)
+% 
+%     for i=1:length(Phi_data_mean)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_data_mean(:,i),colors(i))
+%         hold on
+%     end
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     title('OMA-Data')
+% 
+%     % Plot n4sid
+%     subplot(2,2,3)
+% 
+%     for i=1:length(Phi_n4_mean(1,:))
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_n4_mean(:,i),colors(i))
+%         hold on
+%     end
+%     title('n4sid')
+% 
+%     %Plot NeXT-ERA
+%     subplot(2,2,4)
+% 
+% 
+%     for i=1:length(Phi_NeXT_mean(1,:))
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_NeXT_mean(:,i),colors(i))
+%         hold on
+%     end
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     title('NeXT-ERA')
+%     
+%     
+%     sgtitle(join((['Eigenvector Complexity Plots (Averages) for Emotion: ' onlineratings(trial)])))
+%     
+%     filename=['export/averagePhi/T' num2str(trial),'avg' ,extension]
+%     
+%     saveas(gcf,filename)
+%     close all
+%     
     % Scatter Plots
     x=[1 1 1 1 1 1;2 2 2 2 2 2;3 3 3 3 3 3;4 4 4 4 4 4;5 5 5 5 5 5];
     [theta_cov,rho_cov]=cart2pol(real(Phi_cov_3d),imag(Phi_cov_3d));
@@ -267,40 +267,40 @@ for trial= 1:40
     SEM_theta_NeXT=std(theta_cov,0,3)/sqrt(N);
     SEM_rho_NeXT=std(rho_cov,0,3)/sqrt(N);
     
-    figure
-    set(gcf,'units','points','position',[500,-300,1000,500])
-    subplot(4,2,1)
-    errorbar(x,theta_cov_mean,SEM_theta_cov,'-s')
-    title('Angle Components for OMA-Cov')
-    subplot(4,2,2)
-    errorbar(x,rho_cov_mean,SEM_rho_cov,'-s')
-    title('Radial Component for OMA-Cov')
-    
-    subplot(4,2,3)
-    errorbar(x,theta_data_mean,SEM_theta_data,'-s')
-    title('Angle Components for OMA-Data')
-    subplot(4,2,4)
-    errorbar(x,rho_data_mean,SEM_rho_data,'-s')
-    title('Radial Component for OMA-Data')
-    
-    subplot(4,2,5)
-    errorbar(x,theta_n4_mean,SEM_theta_n4,'-s')
-    title('Angle Components for OMA-n4sid')
-    subplot(4,2,6)
-    errorbar(x,rho_n4_mean,SEM_rho_n4,'-s')
-    title('Radial Component for OMA-n4sid')
-    
-    subplot(4,2,7)
-    errorbar(x,theta_NeXT_mean,SEM_theta_NeXT,'-s')
-    title('Angle Components for OMA-NeXT')
-    subplot(4,2,8)
-    errorbar(x,rho_NeXT_mean,SEM_rho_NeXT,'-s')
-    title('Radial Component for OMA-NeXT')
-    sgtitle('Standard Error of the Mean for Eigenvector Components')
-    
-    filename=['export/averagePhi/T' num2str(trial),'comps' ,extension]
-    saveas(gcf,filename)
-    close all
+%     figure
+%     set(gcf,'units','points','position',[500,-300,1000,500])
+%     subplot(4,2,1)
+%     errorbar(x,theta_cov_mean,SEM_theta_cov,'-s')
+%     title('Angle Components for OMA-Cov')
+%     subplot(4,2,2)
+%     errorbar(x,rho_cov_mean,SEM_rho_cov,'-s')
+%     title('Radial Component for OMA-Cov')
+%     
+%     subplot(4,2,3)
+%     errorbar(x,theta_data_mean,SEM_theta_data,'-s')
+%     title('Angle Components for OMA-Data')
+%     subplot(4,2,4)
+%     errorbar(x,rho_data_mean,SEM_rho_data,'-s')
+%     title('Radial Component for OMA-Data')
+%     
+%     subplot(4,2,5)
+%     errorbar(x,theta_n4_mean,SEM_theta_n4,'-s')
+%     title('Angle Components for OMA-n4sid')
+%     subplot(4,2,6)
+%     errorbar(x,rho_n4_mean,SEM_rho_n4,'-s')
+%     title('Radial Component for OMA-n4sid')
+%     
+%     subplot(4,2,7)
+%     errorbar(x,theta_NeXT_mean,SEM_theta_NeXT,'-s')
+%     title('Angle Components for OMA-NeXT')
+%     subplot(4,2,8)
+%     errorbar(x,rho_NeXT_mean,SEM_rho_NeXT,'-s')
+%     title('Radial Component for OMA-NeXT')
+%     sgtitle('Standard Error of the Mean for Eigenvector Components')
+%     
+%     filename=['export/averagePhi/T' num2str(trial),'comps' ,extension]
+%     saveas(gcf,filename)
+%     close all
     
     %% Average of A's and Herms
     % n4
@@ -371,145 +371,145 @@ for trial= 1:40
     norm_data_3=max(abs(Phi_data_3), [],'all');
     Phi_data_3=Phi_data_3/norm_data_3;
     
-    figure
-    set(gcf,'units','points','position',[500,-300,700,700])
+%     figure
+%     set(gcf,'units','points','position',[500,-300,700,700])
+%     
+%     subplot(2,2,1)
+%     
+%     for i=1:length(Phi_cov_2)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_cov_2(:,i),colors(i))
+%         hold on
+%     end
+%     title('OMA-Covar')
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     
+%     
+%     % OMA-data plot
+%     subplot(2,2,2)
+%     
+%     for i=1:length(Phi_data_2)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_data_2(:,i),colors(i))
+%         hold on
+%     end
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     title('OMA-Data')
+%     
+%     % Plot n4sid
+%     subplot(2,2,3)
+%     
+%     for i=1:length(Phi_n4_2(1,:))
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_n4_2(:,i),colors(i))
+%         hold on
+%     end
+%     title('n4sid')
+%     
+%     %Plot NeXT-ERA
+%     subplot(2,2,4)
+%     
+%     
+%     for i=1:length(Phi_NeXT_2(1,:))
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_NeXT_2(:,i),colors(i))
+%         hold on
+%     end
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     title('NeXT-ERA')
+%     
+%     
+%     sgtitle(join((['Eigenvector Complexity Plots (Averages of A) for Emotion: ' onlineratings(trial)])))
+%     
+%     filename=['export/averageA/T' num2str(trial),'avgofA' ,extension]
+%     
+%     saveas(gcf,filename)
+%     close all
+%     
+%     figure
+%     set(gcf,'units','points','position',[500,-300,700,700])
+%     
+%     subplot(2,2,1)
+%     
+%     for i=1:length(Phi_cov_3)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_cov_3(:,i),colors(i))
+%         hold on
+%     end
+%     title(['OMA-Covar Norm Ratio: ' num2str(cov_herm_ratio) ])
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     
+%     
+%     % OMA-data plot
+%     subplot(2,2,2)
+%     
+%     for i=1:length(Phi_data_3)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_data_3(:,i),colors(i))
+%         hold on
+%     end
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     title(['OMA-Data ' num2str(data_herm_ratio)])
+%     
+%     % Plot n4sid
+%     subplot(2,2,3)
+%     
+%     for i=1:length(Phi_n4_3(1,:))
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_n4_3(:,i),colors(i))
+%         hold on
+%     end
+%     title(['n4sid ' num2str(n4_herm_ratio)])
+%     
+%     %Plot NeXT-ERA
+%     subplot(2,2,4)
+%     
+%     
+%     for i=1:length(Phi_NeXT_3(1,:))
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_NeXT_3(:,i),colors(i))
+%         hold on
+%     end
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     title(['NeXT-ERA ' num2str(NeXT_herm_ratio)])
+%     
+%     
+%     sgtitle(join((['Eigenvector Complexity Plots (Herm of A) for Emotion: ' onlineratings(trial)])))
+%     
+%     filename=['export/hermA/T' num2str(trial),'hermofA' ,extension]
+%     
+%     saveas(gcf,filename)
+%     close all
     
-    subplot(2,2,1)
-    
-    for i=1:length(Phi_cov_2)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_cov_2(:,i),colors(i))
-        hold on
-    end
-    title('OMA-Covar')
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    
-    
-    % OMA-data plot
-    subplot(2,2,2)
-    
-    for i=1:length(Phi_data_2)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_data_2(:,i),colors(i))
-        hold on
-    end
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    title('OMA-Data')
-    
-    % Plot n4sid
-    subplot(2,2,3)
-    
-    for i=1:length(Phi_n4_2(1,:))
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_n4_2(:,i),colors(i))
-        hold on
-    end
-    title('n4sid')
-    
-    %Plot NeXT-ERA
-    subplot(2,2,4)
-    
-    
-    for i=1:length(Phi_NeXT_2(1,:))
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_NeXT_2(:,i),colors(i))
-        hold on
-    end
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    title('NeXT-ERA')
-    
-    
-    sgtitle(join((['Eigenvector Complexity Plots (Averages of A) for Emotion: ' onlineratings(trial)])))
-    
-    filename=['export/averageA/T' num2str(trial),'avgofA' ,extension]
-    
-    saveas(gcf,filename)
-    close all
-    
-    figure
-    set(gcf,'units','points','position',[500,-300,700,700])
-    
-    subplot(2,2,1)
-    
-    for i=1:length(Phi_cov_3)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_cov_3(:,i),colors(i))
-        hold on
-    end
-    title(['OMA-Covar Norm Ratio: ' num2str(cov_herm_ratio) ])
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    
-    
-    % OMA-data plot
-    subplot(2,2,2)
-    
-    for i=1:length(Phi_data_3)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_data_3(:,i),colors(i))
-        hold on
-    end
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    title(['OMA-Data ' num2str(data_herm_ratio)])
-    
-    % Plot n4sid
-    subplot(2,2,3)
-    
-    for i=1:length(Phi_n4_3(1,:))
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_n4_3(:,i),colors(i))
-        hold on
-    end
-    title(['n4sid ' num2str(n4_herm_ratio)])
-    
-    %Plot NeXT-ERA
-    subplot(2,2,4)
-    
-    
-    for i=1:length(Phi_NeXT_3(1,:))
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_NeXT_3(:,i),colors(i))
-        hold on
-    end
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    title(['NeXT-ERA ' num2str(NeXT_herm_ratio)])
-    
-    
-    sgtitle(join((['Eigenvector Complexity Plots (Herm of A) for Emotion: ' onlineratings(trial)])))
-    
-    filename=['export/hermA/T' num2str(trial),'hermofA' ,extension]
-    
-    saveas(gcf,filename)
-    close all
-    
-    %heatmaps for People
+    %heatmaps for Robuts
     norm_cov_theta=max(abs(theta_cov_mean), [],'all');
     theta_cov_mean_norm=theta_cov_mean/norm_cov_theta;
     
@@ -524,67 +524,27 @@ for trial= 1:40
     
     figure
     set(gcf,'units','points','position',[500,-300,700,700])
-    subplot(2,2,1)
-    h_cov_meanmap=heatmap([rho_cov_mean,theta_cov_mean_norm]);
-    h_cov_meanmap.Colormap=parula;
-    h_cov_meanmap.ColorbarVisible=0;
-    h_cov_meanmap.YDisplayLabels=[{'Mode 1'}, {'Mode 2'}, {'Mode 3'}, {'Mode 4'}, {'Mode 5'}];
-    h_cov_meanmap.XDisplayLabels=[{'Radial 1'}, {'Radial 2'}, {'Radial 3'}, {'Radial 4'}, {'Radial 5'}, {'Radial 6'}, {'Phase 1'}, {'Phase 2'}, {'Phase 3'}, {'Phase 4'}, {'Phase 5'}, {'Phase 6'}];
-    subplot(2,2,2)
-    h_data_meanmap=heatmap([rho_data_mean,theta_data_mean_norm]);
-    h_data_meanmap.Colormap=parula;
-    h_data_meanmap.ColorbarVisible=0;
-    h_data_meanmap.YDisplayLabels=[{'Mode 1'}, {'Mode 2'}, {'Mode 3'}, {'Mode 4'}, {'Mode 5'}];
-    h_data_meanmap.XDisplayLabels=[{'Radial 1'}, {'Radial 2'}, {'Radial 3'}, {'Radial 4'}, {'Radial 5'}, {'Radial 6'}, {'Phase 1'}, {'Phase 2'}, {'Phase 3'}, {'Phase 4'}, {'Phase 5'}, {'Phase 6'}];
-    subplot(2,2,3)
-    h_n4_meanmap=heatmap([rho_n4_mean,theta_n4_mean_norm]);
-    h_n4_meanmap.Colormap=parula;
-    h_n4_meanmap.ColorbarVisible=0;
-    h_n4_meanmap.YDisplayLabels=[{'Mode 1'}, {'Mode 2'}, {'Mode 3'}, {'Mode 4'}, {'Mode 5'}];
-    h_n4_meanmap.XDisplayLabels=[{'Radial 1'}, {'Radial 2'}, {'Radial 3'}, {'Radial 4'}, {'Radial 5'}, {'Radial 6'}, {'Phase 1'}, {'Phase 2'}, {'Phase 3'}, {'Phase 4'}, {'Phase 5'}, {'Phase 6'}];
-    subplot(2,2,4)
-    h_NeXT_meanmap=heatmap([rho_NeXT_mean,theta_NeXT_mean_norm]);
-    h_NeXT_meanmap.Colormap=parula;
-    h_NeXT_meanmap.ColorbarVisible=0;
-    h_NeXT_meanmap.YDisplayLabels=[{'Mode 1'}, {'Mode 2'}, {'Mode 3'}, {'Mode 4'}, {'Mode 5'}];
-    h_NeXT_meanmap.XDisplayLabels=[{'Radial 1'}, {'Radial 2'}, {'Radial 3'}, {'Radial 4'}, {'Radial 5'}, {'Radial 6'}, {'Phase 1'}, {'Phase 2'}, {'Phase 3'}, {'Phase 4'}, {'Phase 5'}, {'Phase 6'}];
-    sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-    filename=['export/averageA/T' num2str(trial),'avgofA_heat' ,extension]
+    h_avgmap=heatmap([rho_cov_mean,theta_cov_mean_norm,rho_data_mean,theta_data_mean_norm;rho_n4_mean,theta_n4_mean_norm,rho_NeXT_mean,theta_NeXT_mean_norm]);
+    h_avgmap.Colormap=parula;
+    h_avgmap.ColorbarVisible=0;
+    
+    %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
+    filename=['export/averageA/T' num2str(trial),'A_avg_ml' ,extension]
     saveas(gcf,filename)
     close all
     
+    robot_map=[Phi_cov_3, Phi_data_3; Phi_n4_3, Phi_NeXT_3];
     figure
     set(gcf,'units','points','position',[500,-300,700,700])
-    subplot(2,2,1)
-    h_cov_hermmap=heatmap(Phi_cov_3);
-    h_cov_hermmap.Colormap=parula;
-    h_cov_hermmap.ColorbarVisible=0;
-    h_cov_hermmap.Title=['OMA-Covar Norm Ratio: ' num2str(cov_herm_ratio) ];
-    h_cov_hermmap.YLabel='Mode';
-    h_cov_hermmap.XLabel='Mode Component';
-    subplot(2,2,2)
-    h_data_hermmap=heatmap(Phi_data_3);
-    h_data_hermmap.Colormap=parula;
-    h_data_hermmap.ColorbarVisible=0;
-    h_data_hermmap.Title=['OMA-Data ' num2str(data_herm_ratio)];
-    h_data_hermmap.YLabel='Mode';
-    h_data_hermmap.XLabel='Mode Component';
-    subplot(2,2,3)
-    h_n4_hermmap=heatmap(Phi_n4_3);
-    h_n4_hermmap.Colormap=parula;
-    h_n4_hermmap.ColorbarVisible=0;
-    h_n4_hermmap.Title=['n4sid ' num2str(n4_herm_ratio)];
-    h_n4_hermmap.YLabel='Mode';
-    h_n4_hermmap.XLabel='Mode Component';
-    subplot(2,2,4)
-    h_NeXT_hermmap=heatmap(Phi_NeXT_3);
-    h_NeXT_hermmap.Colormap=parula;
-    h_NeXT_hermmap.ColorbarVisible=0;
-    h_NeXT_hermmap.Title=['NeXT-ERA ' num2str(NeXT_herm_ratio)];
-    h_NeXT_hermmap.YLabel='Mode';
-    h_NeXT_hermmap.XLabel='Mode Component';
-    sgtitle(join((['Heatmaps (Herm of A) for Emotion: ' onlineratings(trial)])))
-    filename=['export/hermA/T' num2str(trial),'hermofA_heat' ,extension]
+    h_hermmap=heatmap(robot_map);
+    h_hermmap.Colormap=parula;
+    h_hermmap.ColorbarVisible=0;
+%     h_hermmap.Title=['OMA-Covar Norm Ratio: ' num2str(cov_herm_ratio) ];
+%     h_hermmap.YLabel='Mode';
+%     h_hermmap.XLabel='Mode Component';
+    
+%    sgtitle(join((['Heatmaps (Herm of A) for Emotion: ' onlineratings(trial)])))
+    filename=['export/hermA/T' num2str(trial),'A_heat_ml' ,extension]
     saveas(gcf,filename)
     close all
     
