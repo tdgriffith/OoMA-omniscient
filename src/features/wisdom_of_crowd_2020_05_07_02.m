@@ -2,30 +2,29 @@
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
+colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 %% Setup
-Phi_cov_out=[];
-Phi_data_out=[];
-Phi_NeXT_out=[];
-Phi_n4sid_out=[];
-fn_cov_out=[];
-fn_data_out=[];
-fn_NeXT_out=[];
-fn_n4sid_out=[];
-A_cov_out=[];
-A_data_out=[];
-A_NeXT_out=[];
-A_n4_out=[];
-C_cov_out=[];
-C_data_out=[];
-C_NeXT_out=[];
-C_n4_out=[];
+Phi_cov_out{1,32}=[];
+Phi_data_out{1,32}=[];
+Phi_NeXT_out{1,32}=[];
+Phi_n4sid_out{1,32}=[];
+fn_cov_out{1,32}=[];
+fn_data_out{1,32}=[];
+fn_NeXT_out{1,32}=[];
+fn_n4sid_out{1,32}=[];
+A_cov_out{1,32}=[];
+A_data_out{1,32}=[];
+A_NeXT_out{1,32}=[];
+A_n4_out{1,32}=[];
+C_cov_out{1,32}=[];
+C_data_out{1,32}=[];
+C_NeXT_out{1,32}=[];
+C_n4_out{1,32}=[];
 fs=512;
 T=1/fs;
 
-
-for subject = 1:1
+parfor subject = 7:7
     if subject <= 9
         load_name1=['s0',num2str(subject),'_',num2str(fs),'.h5']
     else
@@ -33,6 +32,9 @@ for subject = 1:1
     end
     subject1=subject;
     s01=h5read(load_name1,['/df_',num2str(fs),'/block0_values']);
+    s01_detrend=s01';
+    s01_detrend=detrend(s01_detrend);
+    s01=s01_detrend';
 
     basename=['S' num2str(subject1)];
     extension='.png';
@@ -42,24 +44,34 @@ for subject = 1:1
     % Loop Over Trials
     
     % Trial Data
-    Y1=s01([3,4,31,27,28],:);
+    channels=[3,4,31,27,28];
+    Y1=s01(:,:);
 %     Y1=reshape(permute(Y1, [3 1 2]), [], size(Y1,2));
     Y1=Y1';
-    Y_train=Y1(:,1:322560*.8);
-    Y_test=Y1(:,322560*.8:322560);
-    %Y2=s01.data(trial+1,[3,4,31,27,28],:);
-    %Y2=squeeze(Y2);
+%     Y_train=Y1(:,1:322560*.8);
+%     Y_test=Y1(:,322560*.8:322560);
+
 
     
     % OMA Covariance Algorithm
-    order = 60;
+    order = 40;
     s = 2*order;
     opt_order=30;
-    [A_cov,C_cov,G_cov,R0_cov] = ssicov(Y1,order,s);
+    [A_cov,C_cov,G_cov,R0_cov,S_cov] = ssicov(Y1,order,s);
+    figure
+    bar(S_cov)
+    title('Singular Values for OMA-COV')
+    filename=['export/',num2str(fs),'hz_filter/S' num2str(subject),'sigma',extension]
+    %saveas(gcf,filename)
+    %close all
     
-    eig(A_cov{opt_order})
+    %eig(A_cov{opt_order})
     err = [0.01,0.05,0.98];
-    %[IDs_cov] = plotstab(A_cov,C_cov,Y1,T,[],err);
+    [IDs_cov] = plotstab(A_cov,C_cov,Y1,T,[],err);
+    filename=['export/',num2str(fs),'hz_filter/S' num2str(subject),'stabCOV',extension]
+    %saveas(gcf,filename)
+    %close all
+    
     [fn_cov,zeta_cov,Phi_cov] = modalparams(A_cov,C_cov,T);
     norm_cov=abs(max(Phi_cov{opt_order}, [], 'all'));
     Phi_cov{opt_order}=Phi_cov{opt_order}/norm_cov;
@@ -70,28 +82,33 @@ for subject = 1:1
     
     
     
-    %n4sid
-    data1 = iddata(Y1',[],T);
-    %         data2 = iddata(Y2',[],T);
-    sys1 = n4sid(data1,opt_order);
-    %         sys2 = n4sid(data2,opt_order);
-    [A_n4,~,C_n4,~] = ssdata(sys1);
-    
-    
-    [fn_n4,zeta_n4,Phi_n4] = modalparams(A_n4,C_n4,T);
-    Phi_n4=Phi_n4{1};
-    norm_n4=abs(max(Phi_n4, [], 'all'));
-    Phi_n4=Phi_n4/norm_n4;
-    Phi_n4_out{subject}=Phi_n4;
-    fn_n4sid_out{subject}=fn_n4{1};
-    A_n4_out{subject}=A_n4;
-    C_n4_out{subject}=C_n4;
+    %n4sid: Running really slow with 512hz
+%     data1 = iddata(Y1,[],T);
+%     %         data2 = iddata(Y2',[],T);
+%     sys1 = n4sid(data1,opt_order);
+%     %         sys2 = n4sid(data2,opt_order);
+%     [A_n4,~,C_n4,~] = ssdata(sys1);
+%     
+%     
+%     [fn_n4,zeta_n4,Phi_n4] = modalparams(A_n4,C_n4,T);
+%     Phi_n4=Phi_n4{1};
+%     norm_n4=abs(max(Phi_n4, [], 'all'));
+%     Phi_n4=Phi_n4/norm_n4;
+%     Phi_n4_out{subject}=Phi_n4;
+%     fn_n4sid_out{subject}=fn_n4{1};
+%     A_n4_out{subject}=A_n4;
+%     C_n4_out{subject}=C_n4;
     
     % OMA-data
     [A_data,C_data,G_data,R0_data] = ssidata(Y1,order,s);
     
     
     [fn_data,zeta_data,Phi_data] = modalparams(A_data,C_data,T);
+    [IDs_cov] = plotstab(A_data,C_data,Y1,T,[],err);
+    filename=['export/',num2str(fs),'hz_filter/S' num2str(subject),'stabDATA',extension];
+    %saveas(gcf,filename)
+    %close all
+    
     Phi_data=Phi_data';
     norm_data=abs(max(Phi_data{opt_order}, [], 'all')); %determine max value
     Phi_data{opt_order}=Phi_data{opt_order}/norm_data; %normalize the one of interest
@@ -101,7 +118,8 @@ for subject = 1:1
     C_data_out{subject}=C_data{opt_order};
     
     %         %NeXT-ERA
-    [NeXT]=NExTFERA(Y1,5,2000,4,0.1,fs,800,200,opt_order,10,1);
+    n_windows=(length(Y1)/20000)-8;
+    [NeXT]=NExTFERA(Y1',1,20000,n_windows,0.1,fs,800,200,2*opt_order,10,1);
     
     
     [fn_NeXT,zeta_NeXT,Phi_NeXT] = modalparams(NeXT.Matrices.A,NeXT.Matrices.C,T);
@@ -134,7 +152,7 @@ for subject = 1:1
 %     % OMA-data plot
     subplot(2,2,2)
     
-    for i=1:length(Phi_data{opt_order})
+    for i=1:length(Phi_data{opt_order}) 
         hidden_arrow = compass(1,0);
         hidden_arrow.Color = 'none';
         hold on
@@ -149,12 +167,12 @@ for subject = 1:1
 %     % Plot n4sid
     subplot(2,2,3)
     
-    for i=1:length(Phi_n4)
+    for i=1:1 %length(Phi_n4) FIX ME DUMMY
         hidden_arrow = compass(1,0);
         hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_n4(:,i),colors(i))
-        hold on
+%         hold on
+%         compass(Phi_n4(:,i),colors(i))
+%         hold on
     end
     title('n4sid')
 %     
@@ -175,15 +193,15 @@ for subject = 1:1
     title('NeXT-ERA')
 %     
 %     
-    sgtitle(join((['Eigenvector Complexity Plots for ALL Trials, Subject ' num2str(subject)])))
+    sgtitle(join((['Eigenvector Complexity Plots for ',num2str(fs),' hz, Subject ' num2str(subject)])))
     
-    filename=['export/',num2str(fs),'hz/S' num2str(subject),extension]
+    filename=['export/',num2str(fs),'hz_filter/S' num2str(subject),'compPlot',extension]
     
-    saveas(gcf,filename)
-    close all
+    %saveas(gcf,filename)
+    %close all
+    
 end
-% ReShape bois
-%reshape so all cells are same dim
+% Save numbers at end
     
     
 
