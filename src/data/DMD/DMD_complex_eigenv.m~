@@ -1,9 +1,17 @@
-load(['ecog_window.mat']);
+% load(['ecog_window.mat']);
+mass=[4,0;0,3];
+stiff=[2,-1;-1,1];
+damp=[0.4,-0.1; -0.1, 0.1];
+A=[zeros(length(mass)),eye(length(mass));-inv(mass)*stiff,-inv(mass)*damp];
+[eigV,eigD]=eig(A);
 
-
+sys=ss(A,[1;1;0;0],eye(4),[0;0;0;0]);
+[X,t]=step(sys);
+X=X';
+X=detrend(X);
 % parameters:
-r = 200; % number of modes
-nstacks = 17; % number of stacks
+r = 5; % number of modes
+nstacks = 3; % number of stacks
 data_org=X;
 % construct the augmented, shift-stacked data matrices
 Xaug = [];
@@ -26,7 +34,8 @@ Phi = Y*V_r/S_r*W_r;
 
 % DMD eigenvalues
 lambda = diag(D);
-omega = log(lambda)/dt/2/pi;
+dt=t(2)-t(1)
+omega = diag(log(diag(lambda)))/dt
 Omega=diag(omega);
 %% eigenvalue
 figure('Position', [100 100 600 300]);
@@ -41,7 +50,7 @@ axis square;
 subplot(1,2,2);
 plot(omega, 'k.');
 line([0 0], 200*[-1 1], 'Color', 'k', 'LineStyle', '--');
-axis([-8 2 -170 +170]);
+axis([-2 2 -2 +2]);
 axis square;
 
 set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
@@ -88,7 +97,7 @@ box on;
 set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
 % print('-depsc2', '-loose', ['../figures/DMD_spectrum.eps']);
 
-
+c=7;
 Phi_phys=Phi(1:c,:);
 Phi_max=max(Phi_phys);
 Phi_phys_norm=Phi_phys./Phi_max;

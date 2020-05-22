@@ -1,14 +1,21 @@
-load(['ecog_window.mat']);
-
+%load(['ecog_window.mat']);
+load_mat='s01.mat';
+s01=load(load_mat);
+trial=2;
+%Y1=s01.data(trial,:,:);
+Y1=s01.data(trial,[3,4,31,27,28],:);
+Y1=squeeze(Y1);
+fs=128;
+dt=1/fs;
 
 % parameters:
-r = 200; % number of modes
-nstacks = 17; % number of stacks
-data_org=X;
+r = 120; % number of modes
+nstacks = 40; % number of stacks
+
 % construct the augmented, shift-stacked data matrices
 Xaug = [];
 for st = 1:nstacks,
-    Xaug = [Xaug; X(:, st:end-nstacks+st)];%#ok<AGROW>
+    Xaug = [Xaug; Y1(:, st:end-nstacks+st)];%#ok<AGROW>
 end;
 X = Xaug(:, 1:end-1);
 Y = Xaug(:, 2:end);
@@ -28,6 +35,7 @@ Phi = Y*V_r/S_r*W_r;
 lambda = diag(D);
 omega = log(lambda)/dt/2/pi;
 Omega=diag(omega);
+
 %% eigenvalue
 figure('Position', [100 100 600 300]);
 subplot(1,2,1);
@@ -61,7 +69,7 @@ P = (diag(Phi'*Phi));
 figure('Position', [100 100 600 300]);
 subplot(1,2,1);
 stem(f, P, 'k');
-xlim([0 150]);
+%xlim([0 150]);
 axis square;
 
 % power spectrum
@@ -80,24 +88,35 @@ for c = 1:nelectrodes,
 end;
 plot(f, 2*abs(mean(fftp(c,1:NFFT/2+1), 1)), ...
     'k', 'LineWidth', 2);
-xlim([0 150]);
-ylim([0 400]);
+%xlim([0 150]);
+%ylim([0 400]);
 axis square;
 box on;
 
 set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
-% print('-depsc2', '-loose', ['../figures/DMD_spectrum.eps']);
 
-
-Phi_phys=Phi(1:c,:);
+cutoff=length(S)/nstacks;
+Phi_phys=Phi(1:cutoff,:);
 Phi_max=max(Phi_phys);
 Phi_phys_norm=Phi_phys./Phi_max;
+t=linspace(0,timesteps/fs,timesteps);
 
-figure
-plot(t(1:150),data_org(1,1:150))
 %%
+% b = Phi\Xaug(:,1);
+% for k=1:length(t)
+%     xaugdmd(:,k) = Phi*exp(Omega*t(k))*b;
+% end
+
 b = Phi\Xaug(:,1);
 for k=1:length(t)
     time_dyanmics(:,k)=(b.*exp(omega*t(k)));
 end
 Xdmd=Phi*time_dyanmics;
+
+tend=500
+figure
+plot(t(1:tend),Y1(1,1:tend))
+hold on
+plot(t(1:tend),Y1(2,1:tend))
+plot(t(1:tend),real(Xdmd(1,1:tend)))
+plot(t(1:tend),real(Xdmd(2,1:tend)))
