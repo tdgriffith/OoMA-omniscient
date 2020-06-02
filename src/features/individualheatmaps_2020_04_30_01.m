@@ -4,8 +4,8 @@ set(groot, 'defaulttextinterpreter',"latex");
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 filename_out=[];
-%% Setup: Heatmaps for Robots NOT NORMALIZED OMA DATA
-for subject = 13:32
+%% Setup: Heatmaps for Robots NORMALIZED OMA DATA
+parfor subject = 1:32
     if subject <= 9
         load_name1=['s0',num2str(subject),'.mat']
     else
@@ -29,19 +29,21 @@ for subject = 13:32
 %% Loop Over Trials
     for trial = 1:40
         % Trial Data
-        Y1=s01.data(trial,[3,4,31,27,28],:);
+        %Y1=s01.data(trial,[3,4,31,27,28],:);
+        Y1=s01.data(trial,1:15,:);
         Y1=squeeze(Y1);
         %Y2=s01.data(trial+1,[3,4,31,27,28],:);
         %Y2=squeeze(Y2);
         t = linspace(0,63,length(Y1));
         fs=128;
         T=1/fs;
+        extension='.png';
 
         % OMA Covariance Algorithm
-        order = 80;
+        order = 60;
         s = 2*order;
         opt_order=40;
-        [A_cov,C_cov,G_cov,R0_cov] = ssicov(Y1,order,s);
+        [A_cov,C_cov,G_cov,R0_cov,S_cov] = ssicov(Y1,order,s);
 %         [A_cov2,C_cov2,G_cov2,R0_cov2] = ssicov(Y2,order,s); 
         eig(A_cov{opt_order})
         err = [0.01,0.05,0.98];
@@ -57,24 +59,26 @@ for subject = 13:32
 %         imag_part2=imag(eig(A_cov2{opt_order}));
 
         %n4sid
-        data1 = iddata(Y1',[],T);
-%         data2 = iddata(Y2',[],T);
-        sys1 = n4sid(data1,12);
-%         sys2 = n4sid(data2,12);
-        [A_n4_1,~,C_n4_1,~] = ssdata(sys1);
-%         [A_n4_2,~,C_n4_2,~] = ssdata(sys2);
-%         real_part_n4=real(eig(A_n4_1));
-%         imag_part_n4=imag(eig(A_n4_1));
-%         real_part_n4_2=real(eig(A_n4_2));
-%         imag_part_n4_2=imag(eig(A_n4_2));
-        
-        [fn_n4,zeta_n4,Phi_n4] = modalparams(A_n4_1,C_n4_1,T);
-        Phi_n4=Phi_n4{1};
-        norm_n4=abs(max(Phi_n4, [], 'all'));
-        Phi_n4=Phi_n4/norm_n4;
+%         data1 = iddata(Y1',[],T);
+% %         data2 = iddata(Y2',[],T);
+%         sys1 = n4sid(data1,12);
+% %         sys2 = n4sid(data2,12);
+%         [A_n4_1,~,C_n4_1,~] = ssdata(sys1);
+% %         [A_n4_2,~,C_n4_2,~] = ssdata(sys2);
+% %         real_part_n4=real(eig(A_n4_1));
+% %         imag_part_n4=imag(eig(A_n4_1));
+% %         real_part_n4_2=real(eig(A_n4_2));
+% %         imag_part_n4_2=imag(eig(A_n4_2));
+%         
+%         [fn_n4,zeta_n4,Phi_n4] = modalparams(A_n4_1,C_n4_1,T);
+%         Phi_n4=Phi_n4{1};
+%         norm_n4=abs(max(Phi_n4, [], 'all'));
+%         Phi_n4=Phi_n4/norm_n4;
 
         % OMA-data
         [A_data,C_data,G_data,R0_data] = ssidata(Y1,order,s);
+        err = [0.01,0.05,0.98];
+        %[IDs_cov] = plotstab(A_data,C_data,Y1,T,[],err);
 %         real_part_data=real(eig(A_data{opt_order}));
 %         imag_part_data=imag(eig(A_data{opt_order}));
 %         [A_data2,C_data2,G_data2,R0_data2] = ssidata(Y2,order,s);
@@ -84,7 +88,7 @@ for subject = 13:32
         [fn_data,zeta_data,Phi_data] = modalparams(A_data,C_data,T);
         Phi_data=Phi_data';
         norm_data=abs(max(Phi_data{opt_order}, [], 'all')); %determine max value
-        %Phi_data{opt_order}=Phi_data{opt_order}/norm_data; %normalize the one of interest
+        Phi_data{opt_order}=Phi_data{opt_order}/norm_data; %normalize the one of interest
 
 %         %NeXT-ERA
         [NeXT]=NExTFERA(Y1,5,2000,4,0.1,fs,800,200,12,10,1);
@@ -102,90 +106,45 @@ for subject = 13:32
 %         imag_part_NeXT2=imag(eig(NeXT2.Matrices.A));
 
 
-%         figure
-%         set(gcf,'units','points','position',[500,-300,700,700])
-% 
-%         subplot(2,2,1)
-% 
-%         for i=1:length(Phi_cov{opt_order})
-%             hidden_arrow = compass(1,0);
-%             hidden_arrow.Color = 'none';
-%             hold on
-%             compass(Phi_cov{12}(:,i),colors(i))
-%             hold on
-%         end
-%         title('OMA-Covar')
-%         xlim([-1.25 1.25])
-%         ylim([-1.25 1.25])
-%         grid on
-% 
-% 
-%         % OMA-data plot
-%         subplot(2,2,2)
-% 
-%         for i=1:length(Phi_data{opt_order})
-%             hidden_arrow = compass(1,0);
-%             hidden_arrow.Color = 'none';
-%             hold on
-%             compass(Phi_data{12}(:,i),colors(i))
-%             hold on
-%         end
-%         xlim([-1.25 1.25])
-%         ylim([-1.25 1.25])
-%         grid on
-%         title('OMA-Data')
-% 
-%         % Plot n4sid
-%         subplot(2,2,3)
-% 
-%         for i=1:length(Phi_n4(1,:))
-%             hidden_arrow = compass(1,0);
-%             hidden_arrow.Color = 'none';
-%             hold on
-%             compass(Phi_n4(:,i),colors(i))
-%             hold on
-%         end
-%         title('n4sid')
-% 
-%         %Plot NeXT-ERA
-%         subplot(2,2,4)
-% 
-% 
-%         for i=1:length(Phi_NeXT(1,:))
-%             hidden_arrow = compass(1,0);
-%             hidden_arrow.Color = 'none';
-%             hold on
-%             compass(Phi_NeXT(:,i),colors(i))
-%             hold on
-%         end
-%          xlim([-1.25 1.25])
-%          ylim([-1.25 1.25])
-%         grid on
-%         title('NeXT-ERA')
-% 
-% 
-%         sgtitle(join((['Eigenvector Complexity Plots for Subject: ' num2str(subject1), ' Emotion: ' onlineratings(trial)])))
-%         filename=[basename,'E' num2str(trial) ,extension]
 
-       
-        
-        %saveas(gcf,[basename '/' filename ])
-        %close all
         
         %heatmaps for robuts
         figure
         set(gcf,'units','points','position',[500,-200,700,500])
-        h_indmap=heatmap([real(Phi_data{opt_order});imag(Phi_data{opt_order})])
+        zeta_map=transpose(zeta_data{opt_order}/max(zeta_data{opt_order}));
+        fn_map=transpose(fn_data{opt_order}/max(fn_data{opt_order}));
+        h_indmap=heatmap([real(Phi_data{opt_order});imag(Phi_data{opt_order});zeta_map;fn_map]);
         h_indmap.Colormap=parula;
         h_indmap.ColorbarVisible=0;
         
         %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-        filename=['export/ind_phi/T' num2str(trial),'S' num2str(subject), extension]
-        filename2=['export/ind_phi/T' num2str(trial),'S' num2str(subject)];
-        filename_out={filename_out;filename2};
+        filename2=['export/heatmaps/robots/S' num2str(subject),'T' num2str(trial), extension]
+        saveas(gcf,filename2)
+        close all
+        
+        %heatmaps for people
+        figure
+        set(gcf,'units','points','position',[500,-200,700,500])
+        h_indmap=heatmap([real(Phi_data{opt_order});imag(Phi_data{opt_order});zeta_map;fn_map]);
+        h_indmap.Colormap=parula;
+        h_indmap.ColorbarVisible=0;
+        %h_indmap.XDisplayLabels={'Mode 1', 'Mode 2', 'Mode 3', 'Mode 4', 'Mode 5', 'Mode 6', 'Mode 7', 'Mode 8', 'Mode 9', 'Mode 10', 'Mode 11', 'Mode 12', 'Mode 13', 'Mode 14', 'Mode 15', 'Mode 16', 'Mode 17', 'Mode 18', 'Mode 19', 'Mode 20'}
+        sgtitle(join((['Heatmaps for Subject',num2str(subject),'and Emotion: ' onlineratings(trial)])))
+        filename=['export/heatmaps/people/S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename)
         close all
         
+        MAC_plot=macmatrix(Phi_data{opt_order},Phi_cov{opt_order});
+        figure
+        macplot(MAC_plot)
+        filename=['export/heatmaps/people/MAC_S' num2str(subject),'T' num2str(trial), extension]
+        saveas(gcf,filename) 
+        close all
+        
+        export_mat=[Phi_data{opt_order};zeta_data{opt_order}';fn_data{opt_order}']
+        extension='.csv'
+        filename=['export/csv/S' num2str(subject),'T' num2str(trial), extension]
+        csvwrite(filename,export_mat)
         
     end
 end

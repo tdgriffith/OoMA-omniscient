@@ -24,7 +24,7 @@ C_n4_out=[];
 extension='.png';
 
 
-for subject = 2:11
+for subject = 2:2
     if subject <= 9
         load_name1=['S0',num2str(subject),'_restingPre_EC.mat']
     else
@@ -108,67 +108,80 @@ for subject = 2:11
     
     
     
+%     figure
+%     set(gcf,'units','points','position',[500,-300,700,700])
+%     
+%     subplot(2,2,1)
+%     
+%     for i=1:size(Phi_cov{opt_order},2)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_cov{opt_order}(:,i),colors(i))
+%         hold on
+%     end
+%     title('OMA-Covar')
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     
+%     
+%     % OMA-data plot
+%     subplot(2,2,2)
+%     for i=1:size(Phi_data{opt_order},2)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_data{opt_order}(:,i),colors(i))
+%         hold on
+%     end
+%     title('OMA-data')
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     
+%     subplot(2,2,3)
+%     for i=1:size(Phi_n4,2)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_n4(:,i),colors(i))
+%         hold on
+%     end
+%     title('n4sid')
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     
+%     subplot(2,2,4)
+%     for i=1:size(Phi_NeXT,2)
+%         hidden_arrow = compass(1,0);
+%         hidden_arrow.Color = 'none';
+%         hold on
+%         compass(Phi_NeXT(:,i),colors(i))
+%         hold on
+%     end
+%     title('NeXT')
+%     xlim([-1.25 1.25])
+%     ylim([-1.25 1.25])
+%     grid on
+%     
+%     sgtitle(join((['Eigenvector Complexity Plots for Resting Subject: ' num2str(subject)])))
+%     filename=['export/resting/S' num2str(subject),'rest' ,extension]
+%     
+%     saveas(gcf,filename)
+%     close all
+    
     figure
-    set(gcf,'units','points','position',[500,-300,700,700])
+    set(gcf,'units','points','position',[500,-200,700,500])
+    zeta_map=transpose(zeta_data{opt_order}/max(zeta_data{opt_order}));
+    fn_map=transpose(fn_data{opt_order}/max(fn_data{opt_order}));
+    h_indmap=heatmap([real(Phi_data{opt_order});imag(Phi_data{opt_order});zeta_map;fn_map]);
+    h_indmap.Colormap=parula;
+    h_indmap.ColorbarVisible=0;
     
-    subplot(2,2,1)
-    
-    for i=1:size(Phi_cov{opt_order},2)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_cov{opt_order}(:,i),colors(i))
-        hold on
-    end
-    title('OMA-Covar')
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    
-    
-    % OMA-data plot
-    subplot(2,2,2)
-    for i=1:size(Phi_data{opt_order},2)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_data{opt_order}(:,i),colors(i))
-        hold on
-    end
-    title('OMA-data')
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    
-    subplot(2,2,3)
-    for i=1:size(Phi_n4,2)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_n4(:,i),colors(i))
-        hold on
-    end
-    title('n4sid')
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    
-    subplot(2,2,4)
-    for i=1:size(Phi_NeXT,2)
-        hidden_arrow = compass(1,0);
-        hidden_arrow.Color = 'none';
-        hold on
-        compass(Phi_NeXT(:,i),colors(i))
-        hold on
-    end
-    title('NeXT')
-    xlim([-1.25 1.25])
-    ylim([-1.25 1.25])
-    grid on
-    
-    sgtitle(join((['Eigenvector Complexity Plots for Resting Subject: ' num2str(subject)])))
-    filename=['export/resting/S' num2str(subject),'rest' ,extension]
-    
-    saveas(gcf,filename)
-    close all
+    %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
+    filename2=['export/heatmaps/spis_resting/S' num2str(subject),'T' num2str(trial), extension]
+    saveas(gcf,filename2)
+    %close all
 end
