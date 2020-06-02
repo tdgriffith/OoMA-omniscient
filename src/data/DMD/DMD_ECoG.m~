@@ -4,7 +4,7 @@ load(['ecog_window.mat']);
 % parameters:
 r = 200; % number of modes
 nstacks = 17; % number of stacks
-data_org=X;
+data_org=X
 % construct the augmented, shift-stacked data matrices
 Xaug = [];
 for st = 1:nstacks,
@@ -98,6 +98,5 @@ plot(t(1:150),data_org(1,1:150))
 %%
 b = Phi\Xaug(:,1);
 for k=1:length(t)
-    time_dyanmics(:,k)=(b.*exp(omega*t(k)));
+    xaugdmd(:,k) = Phi*exp(Omega*t(k))*b;
 end
-Xdmd=Phi*time_dyanmics;
