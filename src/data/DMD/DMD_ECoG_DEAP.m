@@ -1,16 +1,16 @@
-%load(['ecog_window.mat']);
-load_mat='s01.mat';
+close all
+clear all
+load_mat='s08.mat';
 s01=load(load_mat);
-trial=2;
-%Y1=s01.data(trial,:,:);
-Y1=s01.data(trial,[3,4,31,27,28],:);
+trial=15;
+Y1=s01.data(trial,1:15,:);
 Y1=squeeze(Y1);
 fs=128;
 dt=1/fs;
 
 % parameters:
-r = 120; % number of modes
-nstacks = 40; % number of stacks
+r = 210; % number of modes, remember DMD generates complex conjugates
+nstacks = 15; % number of stacks
 
 % construct the augmented, shift-stacked data matrices
 Xaug = [];
@@ -99,13 +99,9 @@ cutoff=length(S)/nstacks;
 Phi_phys=Phi(1:cutoff,:);
 Phi_max=max(Phi_phys);
 Phi_phys_norm=Phi_phys./Phi_max;
+Phi_phys_unique=Phi_phys_norm(:,1:2:end);
 t=linspace(0,timesteps/fs,timesteps);
 
-%%
-% b = Phi\Xaug(:,1);
-% for k=1:length(t)
-%     xaugdmd(:,k) = Phi*exp(Omega*t(k))*b;
-% end
 
 b = Phi\Xaug(:,1);
 for k=1:length(t)
@@ -113,10 +109,18 @@ for k=1:length(t)
 end
 Xdmd=Phi*time_dyanmics;
 
-tend=500
+tend=500;
 figure
 plot(t(1:tend),Y1(1,1:tend))
 hold on
-plot(t(1:tend),Y1(2,1:tend))
+plot(t(1:tend),Y1(2,1:tend)) %select non-repeated modes (complex conj.)
 plot(t(1:tend),real(Xdmd(1,1:tend)))
 plot(t(1:tend),real(Xdmd(2,1:tend)))
+
+figure
+set(gcf,'units','points','position',[500,-200,700,500])
+fn_map=abs(transpose(omega/max(omega)));
+fn_map=fn_map(:,1:2:end);
+h_indmap=heatmap([real(Phi_phys_unique);imag(Phi_phys_unique);fn_map],'CellLabelColor','none');
+h_indmap.Colormap=parula;
+h_indmap.ColorbarVisible=0;
