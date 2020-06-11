@@ -1,0 +1,138 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Board%
+}{%
+Board%
+}{%
+{\protect \APACyear {2017}}%
+}]{%
+board2017collision}
+\APACinsertmetastar {%
+board2017collision}%
+\begin{APACrefauthors}%
+Board, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Collision between US Navy Destroyer John S McCain and
+  Tanker Alnic MC Singapore Strait, 5 Miles Northeast of Horsburgh Lighthouse
+  August 21, 2017} {Collision between us navy destroyer john s mccain and
+  tanker alnic mc singapore strait, 5 miles northeast of horsburgh lighthouse
+  august 21, 2017}.{\BBCQ}
+\newblock
+
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Faturechi%
+, Rose%
+\BCBL {}\ \BBA {} Miller%
+}{%
+Faturechi%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2019}}%
+}]{%
+faturechi2019years}
+\APACinsertmetastar {%
+faturechi2019years}%
+\begin{APACrefauthors}%
+Faturechi, R.%
+, Rose, M.%
+\BCBL {}\ \BBA {} Miller, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{}{}.
+\newblock
+\APACrefbtitle {Years of Warnings, Then Death and Disaster: How the Navy Failed
+  Its Sailors.} {Years of warnings, then death and disaster: How the navy
+  failed its sailors.}
+\newblock
+\APACaddressPublisher{}{ProPublica}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Miller%
+, Rose%
+, Faturechi%
+\BCBL {}\ \BBA {} Chang%
+}{%
+Miller%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2019}}%
+}]{%
+miller_rose_faturechi_chang_2019}
+\APACinsertmetastar {%
+miller_rose_faturechi_chang_2019}%
+\begin{APACrefauthors}%
+Miller, T\BPBI C.%
+, Rose, M.%
+, Faturechi, R.%
+\BCBL {}\ \BBA {} Chang, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{Dec}{}.
+\newblock
+\APACrefbtitle {The Navy Installed Touch-screen Steering Systems To Save Money.
+  Ten Sailors Paid With Their Lives.} {The navy installed touch-screen steering
+  systems to save money. ten sailors paid with their lives.}
+\newblock
+\begin{APACrefURL}
+  \url{https://features.propublica.org/navy-uss-mccain-crash/navy-installed-touch-screen-steering-ten-sailors-paid-with-their-lives/}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+O'Rourke%
+}{%
+O'Rourke%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+boat_facts}
+\APACinsertmetastar {%
+boat_facts}%
+\begin{APACrefauthors}%
+O'Rourke, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Navy DDG-51 and DDG-1000 destroyer programs: Background
+  and issues for Congress} {Navy ddg-51 and ddg-1000 destroyer programs:
+  Background and issues for congress}.{\BBCQ}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Qu%
+, Meng%
+\BCBL {}\ \BBA {} Suyi%
+}{%
+Qu%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+TSS}
+\APACinsertmetastar {%
+TSS}%
+\begin{APACrefauthors}%
+Qu, X.%
+, Meng, Q.%
+\BCBL {}\ \BBA {} Suyi, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Ship collision risk assessment for the Singapore Strait}
+  {Ship collision risk assessment for the singapore strait}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Accident Analysis \& Prevention}{43}{6}{2030--2036}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

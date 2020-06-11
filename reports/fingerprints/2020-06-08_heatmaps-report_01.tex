@@ -1,0 +1,46 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{color,soul}
+\DeclareRobustCommand{\hlcyan}[1]{{\sethlcolor{cyan}\hl{#1}}}
+\usepackage[document]{ragged2e}
+
+\newcommand{\+}[1]{\ensuremath{\mathbf{#1}}} % comando para escrever matrizes em negrito \+A= A
+
+\geometry{top=2.5cm, bottom=2.5cm, right=2.5cm, left=2.5cm}
+
+\begin{document}
+\noindent Texas A\&M University \hfill Morpheus Lab\\
+\noindent Dr. James Hubbard Jr. \hfill 2020-06-08\\
+\noindent Tristan Griffith
+
+\center{\large{Brief on Modal EEG Fingerprinting}} % Inserir o título do artigo
+\justify
+
+%%%%%%% Conteúdo da resenha %%%%%%%%%%%
+
+\section{Motivation}
+A correlation between electrical activity in the brain (as electroencephalography) and cognition has already been established \cite{alarcao2017emotions}. However, formal models of this relationship have thus far been experimentally limited. We postulate that data driven system identification methods of EEG data, such as Output Only Modal Analysis and Dynamic Mode Decomposition, may yield predictive models of cognition for more complete information flow between human operators and co-robots. As an initial step to verify that there is statistically significant information in these modal representations, an artificial neural network is proposed to discriminate subjects in a database. If the network shows sufficient accuracy in identifying subjects from the modal representation of their brain activity, we gain confidence that the modal representation is capturing significant information in the modes. This document surveys this approach and details the results of the network. It is shown that the network can discriminate 32 subjects from one another with <99\% accuracy based on knowledge of the significant modes alone.
+\section{The EEG Dataset}
+The data used to test this modal decomposition approach is primarily the DEAP dataset \cite{koelstra2011deap}. This dataset was established to aid the analysis of human affective states. It includes 40 different minute long  trials for 32 different subjects. From this timeseries EEG data with 32 available spatial channels, 1280 modal decompositions will be performed. 1024 of these decompositions are provided to the neural network for training, while the remaining 256 decompositons will be used to validate the performance of the network. A closer look at the modal decomposition follows.
+\section{Modal Decomposition of Data}
+\subsection{Output Only Modal Analysis (OMA)}
+Output Only Modal Analysis (OMA) algorithms have been in use since at least the 90's \cite{peeters1999reference}. Originally developed for large mechanical structures, which are extremely difficult to precisely excite, OMA algorithms assume broadband stochastic input to the system in order to determine a state space model for a given system. These algorithms fall under a broader class of subspace identification methods, which rely directly on measured data. The specific method applied to this data results from solving a set of linear equations with least squares to match data held in a Hankel matrix \cite{261604}. Empirically, we have seen this algorithm perform more consistently on the DEAP dataset. That is, there is less variance in the generated modes for a given subject. When applied to the DEAP dataset, 
+
+
+\subsection{Dynamic Mode Decomposition (DMD)}
+
+\section{Modal Decomposition as a Heatmap}
+
+\section{Neural Nets for Fingerprinting}
+
+\section{Discussion}
+
+\pagebreak
+\bibliographystyle{IEEEtran}
+\bibliography{references3}
+
+\end{document}
