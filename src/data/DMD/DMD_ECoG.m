@@ -2,8 +2,8 @@ load(['ecog_window.mat']);
 
 
 % parameters:
-r = 200; % number of modes
-nstacks = 17; % number of stacks
+r = 20; % number of modes
+nstacks = 1; % number of stacks
 data_org=X;
 % construct the augmented, shift-stacked data matrices
 Xaug = [];

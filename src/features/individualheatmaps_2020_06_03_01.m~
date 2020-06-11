@@ -4,48 +4,44 @@ set(groot, 'defaulttextinterpreter',"latex");
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 filename_out=[];
-%% Setup: Heatmaps for Robots NORMALIZED OMA DATA
-for subject = 14:14 %parfor
+fs=512;
+T=1/fs;
+%% Setup: Heatmaps for Robots LH RH Data set
+% Hohyun Cho, Minkyu Ahn, Sangtae Ahn, Moonyoung Kwon, Sung Chan Jun, 
+% EEG datasets for motor imagery braincomputer interface, GigaScience, Volume 6, Issue 7, 
+% July 2017, gix034, https://doi.org/10.1093/gigascience/gix034
+
+parfor subject = 20:40
     if subject <= 9
         load_name1=['s0',num2str(subject),'.mat']
     else
         load_name1=['s',num2str(subject),'.mat']
     end
     subject1=subject;
+
     s01=load(load_name1);
-    load_int2=32-subject+1
-    if load_int2 <=9
-        load_name2=['s0',num2str(load_int2),'.mat']
-    else
-        load_name2=['s',num2str(load_int2),'.mat']
-    end
-    subject2=load_int2;
+    s01=s01.eeg.rest;
+    s01=s01(1:64,:);
     basename=['S' num2str(subject1)];
     extension='.png';
-    s02=load(load_name2)
+    s01=detrend(s01');
+    s01=bandstop(s01,[59 61],fs);
+    s01=bandpass(s01,[3, 50],fs);
     
-    %mkdir(basename)
+    s01=s01';
+    s01=reshape(s01,64,4256*2,4);
 
 %% Loop Over Trials
-    parfor trial = 10:10
-        % Trial Data
-        %Y1=s01.data(trial,[3,4,31,27,28],:);
-        Y1=s01.data(trial,1:15,:);
+    for trial = 1:16
+        Y1=s01(:,:,trial);
         Y1=squeeze(Y1);
-        %Y2=s01.data(trial+1,[3,4,31,27,28],:);
-        %Y2=squeeze(Y2);
-        t = linspace(0,63,length(Y1));
-        fs=128;
-        T=1/fs;
         extension='.png';
 
         % OMA Covariance Algorithm
-        order = 40;
+        order = 30;
         s = 2*order;
-        opt_order=30;
+        opt_order=20;
         [A_cov,C_cov,G_cov,R0_cov,S_cov] = ssicov(Y1,order,s);
-%         [A_cov2,C_cov2,G_cov2,R0_cov2] = ssicov(Y2,order,s); 
-        eig(A_cov{opt_order})
         err = [0.01,0.05,0.98];
         %[IDs_cov] = plotstab(A_cov,C_cov,Y1,T,[],err);
         [fn_cov,zeta_cov,Phi_cov] = modalparams(A_cov,C_cov,T);
@@ -105,7 +101,6 @@ for subject = 14:14 %parfor
 %         real_part_NeXT2=real(eig(NeXT2.Matrices.A));
 %         imag_part_NeXT2=imag(eig(NeXT2.Matrices.A));
 
-        
 
 
         
@@ -126,25 +121,27 @@ for subject = 14:14 %parfor
         %heatmaps for people
         figure
         set(gcf,'units','points','position',[500,-200,700,500])
+        heatmap_mat=[real(Phi_data{opt_order});imag(Phi_data{opt_order});zeta_map;fn_map]
+        heatmap_vec=heatmap_mat(:);
         h_indmap=heatmap([real(Phi_data{opt_order});imag(Phi_data{opt_order});zeta_map;fn_map]);
         h_indmap.Colormap=parula;
         h_indmap.ColorbarVisible=0;
-        %h_indmap.XDisplayLabels={'Mode 1', 'Mode 2', 'Mode 3', 'Mode 4', 'Mode 5', 'Mode 6', 'Mode 7', 'Mode 8', 'Mode 9', 'Mode 10', 'Mode 11', 'Mode 12', 'Mode 13', 'Mode 14', 'Mode 15', 'Mode 16', 'Mode 17', 'Mode 18', 'Mode 19', 'Mode 20', 'Mode 21'}
+        %h_indmap.XDisplayLabels={'Mode 1', 'Mode 2', 'Mode 3', 'Mode 4', 'Mode 5', 'Mode 6', 'Mode 7', 'Mode 8', 'Mode 9', 'Mode 10', 'Mode 11', 'Mode 12', 'Mode 13', 'Mode 14', 'Mode 15', 'Mode 16', 'Mode 17', 'Mode 18', 'Mode 19', 'Mode 20'}
         sgtitle(join((['Heatmaps for Subject',num2str(subject),'and Emotion: ' onlineratings(trial)])))
-        filename=['export/heatmaps/people_allch/S' num2str(subject),'T' num2str(trial), extension]
+        filename=['export/heatmaps/resting2/S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename)
         close all
         
         MAC_plot=macmatrix(Phi_data{opt_order},Phi_cov{opt_order});
         figure
         macplot(MAC_plot)
-        filename=['export/heatmaps/people_allch/MAC_S' num2str(subject),'T' num2str(trial), extension]
+        filename=['export/heatmaps/resting2/MAC_S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename) 
         close all
         
         export_mat=[Phi_data{opt_order};zeta_data{opt_order}';fn_data{opt_order}']
         extension='.csv'
-        filename=['export/csv_allch/S' num2str(subject),'T' num2str(trial), extension]
+        filename=['export/csv_rest/S' num2str(subject),'T' num2str(trial), extension]
         csvwrite(filename,export_mat)
         
     end
