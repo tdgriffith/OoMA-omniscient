@@ -17,17 +17,18 @@ parfor subject = 1:32
     subject1=subject;
     
     s01=load(load_name1);
+    disp(subject);
     
     %% Loop Over Trials
     for trial = 1:40
-        Y1=s01.data(trial,1:15,:);
+        Y1=s01.data(trial,1:32,:);
         Y1=squeeze(Y1);
         extension='.png';
         fs=128;
         dt=1/fs;
         
-        r = 40; % number of modes, remember DMD generates complex conjugates
-        nstacks = 20; % number of stacks
+        r = 125; % number of modes, remember DMD generates complex conjugates
+        nstacks = 10; % number of stacks
         
         % construct the augmented, shift-stacked data matrices
         Xaug = [];
@@ -131,7 +132,7 @@ parfor subject = 1:32
 %         end
 %         Xdmd=Phi*time_dyanmics;
         
-        tend=500;
+%         tend=500;
 %         figure
 %         plot(t(1:tend),Y1(1,1:tend))
 %         hold on
@@ -155,17 +156,17 @@ parfor subject = 1:32
         close all
         
         %heatmaps for people
-        figure
-        set(gcf,'units','points','position',[500,-200,700,500])
-        
-        h_indmap=heatmap([real(Phi_phys_unique);imag(Phi_phys_unique);fn_map],'CellLabelColor','none');
-        h_indmap.Colormap=parula;
-        h_indmap.ColorbarVisible=0;
-        %h_indmap.XDisplayLabels={'Mode 1', 'Mode 2', 'Mode 3', 'Mode 4', 'Mode 5', 'Mode 6', 'Mode 7', 'Mode 8', 'Mode 9', 'Mode 10', 'Mode 11', 'Mode 12', 'Mode 13', 'Mode 14', 'Mode 15', 'Mode 16', 'Mode 17', 'Mode 18', 'Mode 19', 'Mode 20'}
-        sgtitle(join((['Heatmaps for Subject',num2str(subject),'and Emotion: ' onlineratings(trial)])))
-        filename=['export/DMD/people/S' num2str(subject),'T' num2str(trial), extension]
-        saveas(gcf,filename)
-        close all
+%         figure
+%         set(gcf,'units','points','position',[500,-200,700,500])
+%         
+%         h_indmap=heatmap([real(Phi_phys_unique);imag(Phi_phys_unique);fn_map],'CellLabelColor','none');
+%         h_indmap.Colormap=parula;
+%         h_indmap.ColorbarVisible=0;
+%         %h_indmap.XDisplayLabels={'Mode 1', 'Mode 2', 'Mode 3', 'Mode 4', 'Mode 5', 'Mode 6', 'Mode 7', 'Mode 8', 'Mode 9', 'Mode 10', 'Mode 11', 'Mode 12', 'Mode 13', 'Mode 14', 'Mode 15', 'Mode 16', 'Mode 17', 'Mode 18', 'Mode 19', 'Mode 20'}
+%         sgtitle(join((['Heatmaps for Subject',num2str(subject),'and Emotion: ' onlineratings(trial)])))
+%         filename=['export/DMD/people/S' num2str(subject),'T' num2str(trial), extension]
+%         saveas(gcf,filename)
+%         close all
 
         
 

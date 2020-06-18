@@ -9,7 +9,7 @@ fs=128;
 dt=1/fs;
 
 % parameters:
-r = 210; % number of modes, remember DMD generates complex conjugates
+r = 40; % number of modes, remember DMD generates complex conjugates
 nstacks = 15; % number of stacks
 
 % construct the augmented, shift-stacked data matrices
@@ -25,6 +25,21 @@ Y = Xaug(:, 2:end);
 U_r = U(:, 1:r);
 S_r = S(1:r, 1:r);
 V_r = V(:, 1:r);
+
+%Singular Value Plots
+%%
+figure
+subplot(1,2,1)
+semilogy(diag(S),'k','LineWidth',1.2)
+grid on
+xlabel('r')
+ylabel('Singular value, \sigmar_r')
+subplot(1,2,2)
+plot(cumsum(diag(S)/sum(diag(S))),'k','LineWidth',1.2)
+grid on
+xlabel('r')
+ylabel('Cum. Energy')
+set(gcf,'Position',[100 100 550 240])
 
 % DMD modes 
 Atilde = U_r'*Y*V_r/S_r;
