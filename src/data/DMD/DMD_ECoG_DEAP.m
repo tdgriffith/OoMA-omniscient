@@ -5,11 +5,11 @@ s01=load(load_mat);
 trial=15;
 Y1=s01.data(trial,1:15,:);
 Y1=squeeze(Y1);
-fs=128;
+fs=160;
 dt=1/fs;
 
 % parameters:
-r = 40; % number of modes, remember DMD generates complex conjugates
+r = 70; % number of modes, remember DMD generates complex conjugates
 nstacks = 15; % number of stacks
 
 % construct the augmented, shift-stacked data matrices
