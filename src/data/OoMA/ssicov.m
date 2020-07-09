@@ -1,4 +1,4 @@
-function [A,C,G,R0] = ssicov(Y,order,s)
+function [A,C,G,R0,S] = ssicov(Y,order,s)
 % [A,C,G,R0] = SSICOV(Y,order,s)
 %	Covariance-based stochastic subspace identification (SSI-cov).
 %

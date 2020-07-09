@@ -1,7 +1,7 @@
 OoMA-omniscient
 ==============================
 
-Operational modal analysis on the DEAP dataset. Searching for modes in cognition with traditional structural analysis.
+Operational modal analysis on EEG datasets. Searching for modes in cognition with traditional structural analysis.
 
 Project Organization
 ------------

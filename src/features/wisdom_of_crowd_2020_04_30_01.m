@@ -22,8 +22,8 @@ C_data_out=[];
 C_NeXT_out=[];
 C_n4_out=[];
 
-for trial= 1:40
-    for subject = 1:32
+for trial= 1:1
+    for subject = 1:1
         if subject <= 9
             load_name1=['s0',num2str(subject),'.mat']
         else
@@ -56,10 +56,10 @@ for trial= 1:40
         T=1/fs;
 
         % OMA Covariance Algorithm
-        order = 25;
+        order = 60;
         s = 2*order;
-        opt_order=12;
-        [A_cov,C_cov,G_cov,R0_cov] = ssicov(Y1,order,s);
+        [A_cov,C_cov,G_cov,R0_cov,S_cov] = ssicov(Y1,order,s);
+        opt_order=sum(S_cov/max(S_cov)>=0.1)
 
         eig(A_cov{opt_order})
         err = [0.01,0.05,0.98];
