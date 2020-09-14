@@ -2,7 +2,7 @@
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
+colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 %% Setup
 Phi_cov_out=[];

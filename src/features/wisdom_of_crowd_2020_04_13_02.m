@@ -22,7 +22,7 @@ C_data_out=[];
 C_NeXT_out=[];
 C_n4_out=[];
 
-for trial= 1:40
+for trial= 1:1
     for subject = 1:32
         if subject <= 9
             load_name1=['s0',num2str(subject),'.mat']
@@ -269,34 +269,36 @@ for trial= 1:40
     
     figure
     set(gcf,'units','points','position',[500,-300,1000,500])
-    subplot(4,2,1)
+    subplot(5,2,1)
     errorbar(x,theta_cov_mean,SEM_theta_cov,'-s')
-    title('Angle Components for OMA-Cov')
-    subplot(4,2,2)
+    title('Phase Components for OMA-Cov')
+    subplot(5,2,2)
     errorbar(x,rho_cov_mean,SEM_rho_cov,'-s')
-    title('Radial Component for OMA-Cov')
+    title('Magnitude Component for OMA-Cov')
     
-    subplot(4,2,3)
+    subplot(5,2,3)
     errorbar(x,theta_data_mean,SEM_theta_data,'-s')
-    title('Angle Components for OMA-Data')
-    subplot(4,2,4)
+    title('Phase Components for OMA-Data')
+    subplot(5,2,4)
     errorbar(x,rho_data_mean,SEM_rho_data,'-s')
-    title('Radial Component for OMA-Data')
+    title('Magnitude Component for OMA-Data')
     
-    subplot(4,2,5)
+    subplot(5,2,5)
     errorbar(x,theta_n4_mean,SEM_theta_n4,'-s')
-    title('Angle Components for OMA-n4sid')
-    subplot(4,2,6)
+    title('Phase Components for n4sid')
+    subplot(5,2,6)
     errorbar(x,rho_n4_mean,SEM_rho_n4,'-s')
-    title('Radial Component for OMA-n4sid')
+    title('Magnitude Component for n4sid')
     
-    subplot(4,2,7)
+    subplot(5,2,7)
     errorbar(x,theta_NeXT_mean,SEM_theta_NeXT,'-s')
-    title('Angle Components for OMA-NeXT')
-    subplot(4,2,8)
+    title('Phase Components for ERA')
+    subplot(5,2,8)
     errorbar(x,rho_NeXT_mean,SEM_rho_NeXT,'-s')
-    title('Radial Component for OMA-NeXT')
+    title('Magnitude Component for ERA')
     sgtitle('Standard Error of the Mean for Eigenvector Components')
+    
+    
     
     filename=['export/averagePhi/T' num2str(trial),'comps' ,extension]
     saveas(gcf,filename)

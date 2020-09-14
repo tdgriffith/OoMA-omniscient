@@ -3,7 +3,7 @@ set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 filename_out=[];
-export_inof=[];
+export_info=[];
 fs=128;
 T=1/fs;
 %% Setup: DMD Heatmaps for DEAP Dataset
@@ -27,7 +27,7 @@ for subject = 1:1
         fs=128;
         dt=1/fs;
         
-        r = 20; % number of modes, remember DMD generates complex conjugates
+        r = 100; % number of modes, remember DMD generates complex conjugates
         nstacks = 10; % number of stacks
         
         % construct the augmented, shift-stacked data matrices
@@ -54,25 +54,25 @@ for subject = 1:1
         omega = log(lambda)/dt/2/pi;
         Omega=diag(omega);
         
-        figure('Position', [100 100 600 300]);
-        subplot(1,2,1);
-        plot(lambda, 'k.');
-        rectangle('Position', [-1 -1 2 2], 'Curvature', 1, ...
-            'EdgeColor', 'k', 'LineStyle', '--');
-        axis(1.2*[-1 1 -1 1]);
-        axis square;
-        
-        
-        subplot(1,2,2);
-        plot(omega, 'k.');
-        line([0 0], 200*[-1 1], 'Color', 'k', 'LineStyle', '--');
-        axis([-8 2 -170 +170]);
-        axis square;
-        
-        set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
-        filename2=['export/DMD/eigvals/S' num2str(subject),'T' num2str(trial), extension]
-        saveas(gcf,filename2)
-        close all
+%         figure('Position', [100 100 600 300]);
+%         subplot(1,2,1);
+%         plot(lambda, 'k.');
+%         rectangle('Position', [-1 -1 2 2], 'Curvature', 1, ...
+%             'EdgeColor', 'k', 'LineStyle', '--');
+%         axis(1.2*[-1 1 -1 1]);
+%         axis square;
+%         
+%         
+%         subplot(1,2,2);
+%         plot(omega, 'k.');
+%         line([0 0], 200*[-1 1], 'Color', 'k', 'LineStyle', '--');
+%         axis([-8 2 -170 +170]);
+%         axis square;
+%         
+%         set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
+%         filename2=['export/DMD/eigvals/S' num2str(subject),'T' num2str(trial), extension]
+%         saveas(gcf,filename2)
+%         close all
         % print('-depsc2', '-loose', ['../figures/DMD_eigenvalues.eps']);
         
         %% spectrum
@@ -86,11 +86,11 @@ for subject = 1:1
         P = (diag(Phi'*Phi));
         
         % DMD spectrum
-        figure('Position', [100 100 600 300]);
-        subplot(1,2,1);
-        stem(f, P, 'k');
-        %xlim([0 150]);
-        axis square;
+%         figure('Position', [100 100 600 300]);
+%         subplot(1,2,1);
+%         stem(f, P, 'k');
+%         %xlim([0 150]);
+%         axis square;
         
         % power spectrum
         timesteps = size(X, 2);
@@ -99,7 +99,7 @@ for subject = 1:1
         NFFT = 2^nextpow2(timesteps);
         f = srate/2*linspace(0, 1, NFFT/2+1);
         
-        subplot(1,2,2);
+%         subplot(1,2,2);
 %         hold on;
 %         for c = 1:nelectrodes,
 %             fftp(c,:) = fft(X(c,:), NFFT);
@@ -113,16 +113,17 @@ for subject = 1:1
 %         axis square;
 %         box on;
         
-        set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
-        filename2=['export/DMD/PSD/S' num2str(subject),'T' num2str(trial), extension]
-        saveas(gcf,filename2)
+%         set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
+%         filename2=['export/DMD/PSD/S' num2str(subject),'T' num2str(trial), extension]
+%         saveas(gcf,filename2)
         close all
         
         cutoff=length(S)/nstacks;
         Phi_phys=Phi(1:cutoff,:);
         Phi_max=max(Phi_phys);
         Phi_phys_norm=Phi_phys./Phi_max;
-        Phi_phys_unique=Phi_phys_norm(:,1:2:end);
+        Phi_phys_unique_norm=Phi_phys_norm(:,1:2:end);
+        Phi_phys_unique=Phi_phys(:,1:2:end);
         t=linspace(0,timesteps/fs,timesteps);
         
         
@@ -146,17 +147,41 @@ for subject = 1:1
         figure
         set(gcf,'units','points','position',[500,-200,700,500])
         [fn,zeta]=damp(omega);
-        fn_map=transpose(fn/max(fn));
+        zeta=zeta';
+        fn=fn';
+        fn_map=fn/max(fn);
         fn_map=fn_map(:,1:2:end);
-        zeta_map=transpose(zeta/max(zeta));
+        zeta_map=zeta/max(zeta);
         zeta_map=zeta_map(:,1:2:end);
-        h_indmap=heatmap([real(Phi_phys_unique);imag(Phi_phys_unique);zeta_map;fn_map],'CellLabelColor','none');
+        h_indmap=heatmap([real(Phi_phys_unique_norm);imag(Phi_phys_unique_norm);zeta_map;fn_map],'CellLabelColor','none');
         h_indmap.Colormap=parula;
         h_indmap.ColorbarVisible=0;        
         %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-        filename2=['export/DMD/robots/S' num2str(subject),'T' num2str(trial), extension]
+        filename2=['export/DMD_tab/robots/S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename2)
         close all
+        
+        subject_vec=repelem(subject,size([Phi_phys(:,1:2:end);zeta(:,1:2:end);fn(:,1:2:end)],1));
+        trial_vec=repelem(trial,size([Phi_phys(:,1:2:end);zeta(:,1:2:end);fn(:,1:2:end)],1));
+        
+        Phi_phys_exp=Phi_phys(:,1:2:end);
+        Phi_phys_exp=Phi_phys_exp(:);
+        Phi_phys_exp_re=real(Phi_phys_exp);
+        Phi_phys_exp_im=imag(Phi_phys_exp);
+        subject_exp=repelem(subject,(size(Phi_phys,1))*r/2,1);
+        chann_count=(1:size(Phi_phys,1))';
+        chann_exp=repmat(chann_count,r/2,1);
+        
+        mode_count=(1:size(Phi_phys,2)/2)';
+        mode_exp=repelem(mode_count,size(Phi_phys,1),1);
+        
+        fn_exp=repelem(fn_map',size(Phi_phys,1),1);
+        
+        
+        export_info=[export_info;[Phi_phys_exp_re,Phi_phys_exp_im,chann_exp,subject_exp,mode_exp]];
+
+        
+        
         
         %heatmaps for people
 %         figure
@@ -171,7 +196,9 @@ for subject = 1:1
 %         saveas(gcf,filename)
 %         close all
 
+
         
 
     end
 end
+writematrix(export_info,'dmd_deap_100modes.csv')

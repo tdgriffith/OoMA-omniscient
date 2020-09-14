@@ -2,7 +2,7 @@ clear all, close all, clc
 
 dt = 0.01;
 t = 0:dt:10;
-x = sin(t);
+x = 0.3*sin(3*t)+0.3*sin(18*t)+0.3*sin(60*t);
 plot(t,x), hold on
 
 X = x(1:end-1);
@@ -19,10 +19,12 @@ xdmd = b*phi*exp(Omega*t);
 plot(t,xdmd,'r--')
 
 %% Augmented DMD
-Xaug = [x(1:end-2);
-    x(2:end-1)];
-Xaug2 = [x(2:end-1);
-    x(3:end)];
+Xaug = [x(1:end-6);
+    x(2:end-5);x(3:end-4);x(4:end-3);x(5:end-2);x(6:end-1)];
+Xaug2 = [x(2:end-2);
+    x(3:end-1);x(4:end)];
+Xaug2 = [x(2:end-5);
+    x(3:end-4);x(4:end-3);x(5:end-2);x(6:end-1);x(7:end)];
 
 [U,S,V] = svd(Xaug,'econ');
 Atilde = U'*Xaug2*V*inv(S);
