@@ -1,5 +1,8 @@
 close all
 clear all
+set(groot, 'defaultAxesTickLabelInterpreter',"latex");
+set(groot, 'defaultLegendInterpreter', "latex");
+set(groot, 'defaulttextinterpreter',"latex");
 load_mat='s08.mat';
 s01=load(load_mat);
 trial=15;
@@ -33,7 +36,8 @@ subplot(1,2,1)
 semilogy(diag(S),'k','LineWidth',1.2)
 grid on
 xlabel('r')
-ylabel('Singular value, \sigmar_r')
+ylabel('Singular value, \sigmar_r', 'interpreter','latex')
+ylabel('Singular value')
 subplot(1,2,2)
 plot(cumsum(diag(S)/sum(diag(S))),'k','LineWidth',1.2)
 grid on
