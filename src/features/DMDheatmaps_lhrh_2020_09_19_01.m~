@@ -1,62 +1,39 @@
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
-filename_out=[];
-fs=160;
+fs=512;
 T=1/fs;
+extension='.png';
 %% Setup: DMD Heatmaps for DEAP Dataset
-for subject = 1:109
-    load_name_mat=[];
+for subject = 18:52
     if subject <= 9
-        for trial = 1:9            
-            load_name = ['S00',num2str(subject),'R0',num2str(trial),'.h5'];
-            load_name_mat=[load_name_mat;load_name];
-        end
-        for trial = 10:14
-            load_name = ['S00',num2str(subject),'R',num2str(trial),'.h5'];
-            load_name_mat=[load_name_mat;load_name];
-        end
+        load_name=['s0',num2str(subject),'.mat'];
     elseif subject <=99 && subject >=10
-        for trial = 1:9            
-            load_name = ['S0',num2str(subject),'R0',num2str(trial),'.h5'];
-            load_name_mat=[load_name_mat;load_name];
-        end
-        for trial = 10:14
-            load_name = ['S0',num2str(subject),'R',num2str(trial),'.h5'];
-            load_name_mat=[load_name_mat;load_name];
-        end
-    elseif subject >= 100
-        for trial = 1:9            
-            load_name = ['S',num2str(subject),'R0',num2str(trial),'.h5']
-            load_name_mat=[load_name_mat;load_name];
-        end
-        for trial = 10:14
-            load_name = ['S',num2str(subject),'R',num2str(trial),'.h5']
-            load_name_mat=[load_name_mat;load_name];
-        end
+        load_name=['s',num2str(subject),'.mat'];
     end
+
     
     %% Loop Over Trials
+    eeg=load(load_name);
     count=0;
-    for trial = 1:14
-        s01 = h5read(load_name_mat(trial,:),['/df/block0_values']); %
-        fix=length(s01)/8;
-        Y_split{1}=s01(1:32,1:fix*1);
-        Y_split{2} = s01(1:32,fix:fix*2);
-        Y_split{3} = s01(1:32,fix*2:fix*3);
-        Y_split{4} = s01(1:32,fix*3:fix*4);
-        Y_split{5} = s01(1:32,fix*4:fix*5);
-        Y_split{6} = s01(1:32,fix*5:fix*6);
-        Y_split{7} = s01(1:32,fix*6:fix*7);
-        Y_split{8} = s01(1:32,fix*7:fix*8);
-        extension='.png';
-        fs=160;
+    for trial = 1:5
+        fs=512;
         dt=1/fs;
+        modes=["rest";"movement_left";"movement_right";"imagery_left";"imagery_right"];
+        mode=modes(trial)
+        Y1=eeg.eeg.(mode);
+        if trial == 1
+            Y1=Y1(:,1:65*512); %make this one an even number of secs for reshape
+        end
         
-        for i = 1:8
-            Y_curr=Y_split{i};
-            count=count+1
+        Y1=Y1(1:64,:);%select only EEG channels
+        Y1=bandpass(detrend(Y1'),[3 45],fs); %Signal processing
+        Y1=Y1';
+        Y1=reshape(Y1,64,length(Y1)/512/5,[]);
+        
+        for i = 1:size(Y1,2)
+            count=count+1;
+            Y_curr=Y1(:,i,:);
             r = 200; % number of modes, remember DMD generates complex conjugates
             nstacks = 10; % number of stacks
         
@@ -100,7 +77,7 @@ for subject = 1:109
             axis square;
 
             set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
-            filename2=['export/DMD_phys_2/eigvals/S' num2str(subject),'T' num2str(count), extension]
+            filename2=['export/DMD_lhrh/eigvals/S', num2str(subject),'T', num2str(count),'_mode',num2str(trial), extension]
             saveas(gcf,filename2)
             close all
             % print('-depsc2', '-loose', ['../figures/DMD_eigenvalues.eps']);
@@ -144,7 +121,7 @@ for subject = 1:109
     %         box on;
 
             set(gcf, 'PaperUnits', 'inches', 'PaperPosition', [0 0 6 3], 'PaperPositionMode', 'manual');
-            filename2=['export/DMD_phys_2/PSD/S' num2str(subject),'T' num2str(count), extension]
+            filename2=['export/DMD_lhrh/PSD/S' num2str(subject),'T' num2str(count),'_mode',num2str(trial), extension]
             saveas(gcf,filename2)
             close all
 
@@ -164,7 +141,7 @@ for subject = 1:109
     %         Xdmd=Phi*time_dyanmics;
 
     %         tend=500;
-    %         figure
+    %         figurecount
     %         plot(t(1:tend),Y1(1,1:tend))
     %         hold on
     %         plot(t(1:tend),Y1(2,1:tend)) %select non-repeated modes (complex conj.)
@@ -183,10 +160,9 @@ for subject = 1:109
             h_indmap.Colormap=parula;
             h_indmap.ColorbarVisible=0;        
             %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-            filename2=['export/DMD_phys_2/robots/S' num2str(subject),'T' num2str(count), extension]
+            filename2=['export/DMD_lhrh/robots/S' num2str(subject),'T' num2str(count),'_mode',num2str(trial), extension]
             saveas(gcf,filename2)
             close all
-            perc_comp=(subject*count)/(109*14*8)
 
             %heatmaps for people
     %         figure

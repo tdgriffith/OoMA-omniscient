@@ -9,7 +9,7 @@ fs=128;
 T=1/fs;
 %% Setup: DMD Heatmaps for DEAP Dataset, exports dmd heatmap and tabular version for RF
 
-for subject = 1:32
+for subject = 27:27
     if subject <= 9
         load_name1=['s0',num2str(subject),'.mat']
     else
@@ -21,7 +21,7 @@ for subject = 1:32
     disp(subject);
     
     %% Loop Over Trials
-    for trial = 1:40
+    for trial = 18:18
         Y1=s01.data(trial,1:32,:);
         Y1=squeeze(Y1);
         extension='.png';

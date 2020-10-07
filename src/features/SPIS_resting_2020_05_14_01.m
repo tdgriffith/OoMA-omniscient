@@ -2,7 +2,7 @@
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
+colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 %% Setup
 Phi_cov_out=[];
@@ -37,7 +37,7 @@ for subject = 2:2
     
     % Trial Data
     Y1=s01.dataRest(1:30,:);
-    Y1=Y1'-mean(Y1');
+    Y1=bandpass(detrend(Y1'),[3 45],fs);
     t = linspace(0,60*2.5,length(Y1));
     fs=2048;
     T=1/fs;
@@ -51,10 +51,10 @@ for subject = 2:2
     
     eig(A_cov{opt_order})
     err = [0.01,0.05,0.98];
-%     [IDs_cov] = plotstab(A_cov,C_cov,Y1,T,[],err);
-%     title(['Stab. Diagram for Resting Subject ', num2str(subject), ', Trial ' num2str(trial)])
-%     filename=['export/resting/S' num2str(subject),'_rest', extension]
-%     saveas(gcf,filename)
+    [IDs_cov] = plotstab(A_cov,C_cov,Y1,T,[],err);
+    title(['Stab. Diagram for Resting Subject ', num2str(subject), ', Trial ' num2str(trial)])
+    filename=['export/resting/S' num2str(subject),'_rest', extension]
+    saveas(gcf,filename)
     
     [fn_cov,zeta_cov,Phi_cov] = modalparams(A_cov,C_cov,T);
     norm_cov=abs(max(Phi_cov{opt_order}, [], 'all'));
@@ -82,6 +82,7 @@ for subject = 2:2
     
     % OMA-data
     [A_data,C_data,G_data,R0_data] = ssidata(Y1,order,s);
+    [IDs_cov] = plotstab(A_data,C_data,Y1,T,[],err);
     
     
     [fn_data,zeta_data,Phi_data] = modalparams(A_data,C_data,T);

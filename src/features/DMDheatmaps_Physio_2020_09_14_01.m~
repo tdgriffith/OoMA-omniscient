@@ -38,6 +38,7 @@ for subject = 1:109
     end
     
     %% Loop Over Trials
+    count=0;
     for trial = 1:14
         s01 = h5read(load_name_mat(trial,:),['/df/block0_values']); %
         fix=length(s01)/8;
@@ -53,9 +54,9 @@ for subject = 1:109
         fs=160;
         dt=1/fs;
         
-        parfor i = 1:8
+        for i = 1:8
             Y_curr=Y_split{i};
-            r = 120; % number of modes, remember DMD generates complex conjugates
+            r = 200; % number of modes, remember DMD generates complex conjugates
             nstacks = 10; % number of stacks
         
             % construct the augmented, shift-stacked data matrices
@@ -155,6 +156,7 @@ for subject = 1:109
 
 
             b = Phi\Xaug(:,1);
+            count=count+1;
     %         for k=1:length(t)
     %             time_dyanmics(:,k)=(b.*exp(omega*t(k)));
     %         end
@@ -170,6 +172,7 @@ for subject = 1:109
     %         filename2=['export/DMD/timeseries/S' num2str(subject),'T' num2str(trial), extension]
     %         saveas(gcf,filename2)
     %         close all
+   
 
             figure
             set(gcf,'units','points','position',[500,-200,700,500])
@@ -179,9 +182,10 @@ for subject = 1:109
             h_indmap.Colormap=parula;
             h_indmap.ColorbarVisible=0;        
             %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-            filename2=['export/DMD_phys_2/robots/S' num2str(subject),'T' num2str(trial*i), extension]
+            filename2=['export/DMD_phys_2/robots/S' num2str(subject),'T' num2str(count), extension]
             saveas(gcf,filename2)
             close all
+            perc_comp=(subject*trial*i)/(109*14*8)
 
             %heatmaps for people
     %         figure
@@ -197,8 +201,6 @@ for subject = 1:109
     %         close all
 
         end
-        perc_comp=(subject*trial)/(109*14);
-        f = waitbar(perc_comp,'Please wait...');
 
     end
     
