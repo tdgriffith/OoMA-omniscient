@@ -1,7 +1,7 @@
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
+colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 filename_out=[];
 %% Setup: Heatmaps for Robots NORMALIZED OMA DATA
@@ -29,8 +29,8 @@ for subject = 14:14 %parfor
 %% Loop Over Trials
     parfor trial = 10:10
         % Trial Data
-        %Y1=s01.data(trial,[3,4,31,27,28],:);
-        Y1=s01.data(trial,1:15,:);
+        Y1=s01.data(trial,[3,4,31,27,28],:);
+        %Y1=s01.data(trial,1:32,:);
         Y1=squeeze(Y1);
         %Y2=s01.data(trial+1,[3,4,31,27,28],:);
         %Y2=squeeze(Y2);
@@ -42,7 +42,7 @@ for subject = 14:14 %parfor
         % OMA Covariance Algorithm
         order = 40;
         s = 2*order;
-        opt_order=30;
+        opt_order=20;
         [A_cov,C_cov,G_cov,R0_cov,S_cov] = ssicov(Y1,order,s);
 %         [A_cov2,C_cov2,G_cov2,R0_cov2] = ssicov(Y2,order,s); 
         eig(A_cov{opt_order})
