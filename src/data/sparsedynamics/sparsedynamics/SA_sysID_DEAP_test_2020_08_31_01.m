@@ -17,10 +17,18 @@ subject1=subject;
 s01=load(load_name1);
 disp(subject);
 
-trial = 5;
+trial = 20;
 Y1=s01.data(trial,1:n,:);
 Y1=squeeze(Y1);
-Y1=Y1'*j;
+Y1=Y1';
+Y1_norm=Y1./max(Y1);
+Y1_dump=(1-abs(Y1_norm))*1j;
+neg = Y1_norm<0;
+neg=neg*-1;
+pos= Y1_norm>0;
+sign=pos+neg;
+Y1_dump=Y1_dump.*sign;
+Y1=Y1_norm+Y1_dump;
 
 extension='.png';
 fs=128;

@@ -92,3 +92,30 @@ xlabel('Time')
 ylabel('State, $x_k$')
 title('Imag. Comp. A')
 sgtitle(['Simulation Results True A vs. SysID A: Error ',num2str(error)])
+
+%% hadamard sketchbook
+Ht=ifwht(A);
+rhs_hada = @(x)Ht*x;   % ODE right hand side
+[tH,xH]=ode45(@(t,x)rhs_hada(x),tspan,x0,options);  % integrate
+figure
+subplot(1,2,1)
+plot(tH,xH,'LineWidth',1.5)
+hold on
+plot(tH,xH,'k--','LineWidth',1.2)
+xlabel('Time')
+ylabel('State, $x_k$')
+title('Real. Comp. A')
+
+subplot(1,2,2)
+
+plot(tH,imag(xH),'LineWidth',1.5)
+hold on
+plot(tH,imag(xH),'k--','LineWidth',1.2)
+xlabel('Time')
+ylabel('State, $x_k$')
+title('Imag. Comp. A')
+norm_xB=[];
+for i=1:length(xB)
+    norm_temp=norm(xB(i,:));
+    norm_xB=[norm_xB;norm_temp];
+end
