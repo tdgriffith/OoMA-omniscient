@@ -23,7 +23,7 @@ A = 0.1*sigma1-2*sigma2+1.5*sigma3-5*sigma4
 A=A*-j;
 rhs = @(x)A*x;   % ODE right hand side
 tspan=[0:.01:10];   % time span
-x0 = [2; -1];        % initial conditions
+x0 = [sqrt(2); -sqrt(2)];        % initial conditions
 options = odeset('RelTol',1e-10,'AbsTol',1e-10*ones(1,n));
 [t,x]=ode45(@(t,x)rhs(x),tspan,x0,options);  % integrate
 

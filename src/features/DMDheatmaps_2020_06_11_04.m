@@ -41,7 +41,7 @@ for subject = 27:27
         
         % SVD and truncate to first r modes
         [U, S, V] = svd(X, 'econ');
-        U_r = U(:, 1:r);
+        U_r = U(:, 1:r)
         S_r = S(1:r, 1:r);
         V_r = V(:, 1:r);
         
