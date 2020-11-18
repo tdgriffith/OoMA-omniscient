@@ -2,7 +2,9 @@ clear all, close all
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-%% Grab Data: Using the Fully -iH Model here
+%% Import Data Restructuring
+channel_locs=readtable('deap_imag_conv.csv');
+%% Grab Data: Make it like TAT-1 instead of just TA
 n=2;
 basis=gen_iH_basis(n);
 
@@ -17,15 +19,32 @@ subject1=subject;
 s01=load(load_name1);
 disp(subject);
 
-trial = 5;
+trial = 4;
 Y1=s01.data(trial,1:n,:);
 Y1=squeeze(Y1);
-Y1=Y1'*j;
+Y1=Y1';
 
 extension='.png';
 fs=128;
 dt=1/fs;
 tspan=linspace(0,63,8064);
+
+order = 2*n;
+s = 2*order;
+opt_order=n;
+[A_data,C_data,G_data,R0_data] = ssidata(Y1,order,s);
+
+Ah=hadamard(opt_order)*A_data{opt_order}*hadamard(opt_order)./norm(hadamard(2))^opt_order;
+[fn_data,zeta_data,Phi_data] = modalparams(A_data,C_data,dt);
+
+Aq=Ah*-1j;
+rhs = @(x)Aq*x;   % ODE right hand side
+tspan=[0:.01:10];   % time span
+x0=rand(n,1)+1j*rand(n,1); %initial conditions
+options = odeset('RelTol',1e-10,'AbsTol',1e-10*ones(1,n));
+[t,x]=ode45(@(t,x)rhs(x),tspan,x0,options);  % integrate
+Y1=x;
+
 %% compute Derivative 
 eps = 0.0;      % noise strength
 dx=gradient(Y1.',dt).';
@@ -55,35 +74,40 @@ basis(smallinds) = [];
 A_solve=zeros(n,n);
 for i = 1:length(basis)
     if isreal(basis{i})
-        Xi(i)=-Xi(i)
+        Xi(i)=-Xi(i);
     end
     A_solve=A_solve+(Xi(i)*basis{i});
 end
-A_solve
-
+A_solve;
+Aq
+A_solve2=gen_quant_A(Aq)
 %error=norm(A-A_solve) how to error data data
 
 %[tA,xA]=ode45(@(t,x)rhs(x),tspan,x0,options);   % true model
-rhs2 = @(x)A_solve*x;   % ODE right hand side
+rhs2 = @(x)A_solve2*x;   % ODE right hand side
+rhs3 = @(x)A_solve*x;   % ODE right hand side
 
 options = odeset('RelTol',1e-10,'AbsTol',1e-10*ones(1,n));
-x0=Y1(1,:);
+%x0=Y1(1,:);
 [tB,xB]=ode45(@(t,x)rhs2(x),tspan,x0,options);  % integrate
+[tC,xC]=ode45(@(t,x)rhs3(x),tspan,x0,options);  % integrate
 recon_error=norm(Y1-xB,'Fro');
 figure
 subplot(1,2,1)
 plot(tspan(1:512),Y1(1:512,:),'LineWidth',1.5)
 hold on
 plot(tB(1:512),xB(1:512,:),'k--','LineWidth',1.2)
+plot(tC(1:512),xC(1:512,:),'b-','LineWidth',0.8)
 xlabel('Time')
 ylabel('State, $x_k$')
 title('Real. Comp. A')
 
 subplot(1,2,2)
 
-plot(tspan(1:1024),imag(Y1(1:1024,:)),'LineWidth',1.5)
+plot(tspan(1:512),imag(Y1(1:512,:)),'LineWidth',1.5)
 hold on
-plot(tspan(1:1024),imag(xB(1:1024,:)),'k--','LineWidth',1.2)
+plot(tspan(1:512),imag(xB(1:512,:)),'k--','LineWidth',1.2)
+plot(tC(1:512),imag(xC(1:512,:)),'b-','LineWidth',0.8)
 xlabel('Time')
 ylabel('State, $x_k$')
 title('Imag. Comp. A')

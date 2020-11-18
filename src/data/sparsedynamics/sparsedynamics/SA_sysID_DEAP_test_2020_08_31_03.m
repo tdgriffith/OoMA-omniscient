@@ -2,7 +2,9 @@ clear all, close all
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
-%% Grab Data: Using the Fully -iH Model here
+%% Import Data Restructuring
+channel_locs=readtable('deap_imag_conv.csv');
+%% Grab Data: Using the just H Model here
 n=2;
 basis=gen_iH_basis(n);
 
@@ -17,15 +19,31 @@ subject1=subject;
 s01=load(load_name1);
 disp(subject);
 
-trial = 5;
-Y1=s01.data(trial,1:n,:);
+trial = 12;
+Y1=s01.data(trial,1:32,:);
 Y1=squeeze(Y1);
-Y1=Y1'*j;
+Y1=Y1';
 
 extension='.png';
 fs=128;
 dt=1/fs;
 tspan=linspace(0,63,8064);
+
+order = 2*n;
+s = 2*order;
+opt_order=n;
+[A_data,C_data,G_data,R0_data] = ssidata(Y1,order,s);
+Ah=fwht(A_data{opt_order});
+[fn_data,zeta_data,Phi_data] = modalparams(A_data,C_data,dt);
+
+A=Ah*-1j;
+rhs = @(x)A*x;   % ODE right hand side
+tspan=[0:.01:10];   % time span
+x0=rand(n,1)+1j*rand(n,1); %initial conditions
+options = odeset('RelTol',1e-10,'AbsTol',1e-10*ones(1,n));
+[t,x]=ode45(@(t,x)rhs(x),tspan,x0,options);  % integrate
+Y1=x;
+
 %% compute Derivative 
 eps = 0.0;      % noise strength
 dx=gradient(Y1.',dt).';
@@ -43,6 +61,17 @@ Theta=[real(Theta_cust);imag(Theta_cust)];
 dx3=[real(dx(:));imag(dx(:))];
 Xi=mldivide(Theta,dx3);
 
+lambda=max(abs(Xi))*0.2;
+smallinds = (abs(Xi)<lambda);   % find small coefficients
+biginds = ~smallinds;
+Theta=Theta(:,biginds);
+Xi=mldivide(Theta,dx3);
+basis(smallinds) = [];
+
+%% Estimate State Matrix
+dx3=[real(dx(:));imag(dx(:))];
+Xi=mldivide(Theta,dx3);
+
 lambda=0.1;
 smallinds = (abs(Xi)<lambda);   % find small coefficients
 biginds = ~smallinds;
@@ -55,12 +84,13 @@ basis(smallinds) = [];
 A_solve=zeros(n,n);
 for i = 1:length(basis)
     if isreal(basis{i})
-        Xi(i)=-Xi(i)
+        Xi(i)=-Xi(i);
     end
     A_solve=A_solve+(Xi(i)*basis{i});
 end
-A_solve
-
+A_solve;
+A
+A_solve=gen_quant_A(A)
 %error=norm(A-A_solve) how to error data data
 
 %[tA,xA]=ode45(@(t,x)rhs(x),tspan,x0,options);   % true model
@@ -81,9 +111,9 @@ title('Real. Comp. A')
 
 subplot(1,2,2)
 
-plot(tspan(1:1024),imag(Y1(1:1024,:)),'LineWidth',1.5)
+plot(tspan(1:512),imag(Y1(1:512,:)),'LineWidth',1.5)
 hold on
-plot(tspan(1:1024),imag(xB(1:1024,:)),'k--','LineWidth',1.2)
+plot(tspan(1:512),imag(xB(1:512,:)),'k--','LineWidth',1.2)
 xlabel('Time')
 ylabel('State, $x_k$')
 title('Imag. Comp. A')

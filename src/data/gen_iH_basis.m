@@ -8,7 +8,7 @@ function basis = gen_iH_basis(dim)
 for i = 1:dim
     %%
     blank = zeros(dim,dim);
-    blank(i,i) = j;
+    blank(i,i) = 1j;
     diag{i} = blank;
 end
 
@@ -20,10 +20,9 @@ for i = 1:dim-1
         if i ~= ii
             counter=counter+1;
             blank = zeros(dim,dim);
-            blank(i,ii) = j;
-            blank(ii,i) = j;
+            blank(i,ii) = 1j;
+            blank(ii,i) = 1j;
             off_diag_real{counter} = blank;
-            display([i,ii])
         end
     end
     idx_start=idx_start+1;
