@@ -8,7 +8,7 @@ channel_locs=readtable('deap_imag_conv.csv');
 n=2;
 basis=gen_SA_basis(n);
 
-subject = 4;
+subject = 1;
 if subject <= 9
     load_name1=['s0',num2str(subject),'.mat']
 else
@@ -23,11 +23,11 @@ trial = 18;
 Y1=s01.data(trial,1:32,:);
 Y1=squeeze(Y1);
 Y1=Y1';
-% real_channs=channel_locs.Real_DEAP_(1:n);
-% imag_channs=channel_locs.IMAG_DEAP_(1:n);
-% Y1_real=Y1(:,real_channs);
-% Y1_imag=Y1(:,imag_channs)*1j;
-% Y1=Y1_real+Y1_imag;
+real_channs=channel_locs.Real_DEAP_(1:n);
+imag_channs=channel_locs.IMAG_DEAP_(1:n);
+Y1_real=Y1(:,real_channs);
+Y1_imag=Y1(:,imag_channs)*1j;
+Y1=Y1_real+Y1_imag;
 extension='.png';
 fs=128;
 dt=1/fs;
