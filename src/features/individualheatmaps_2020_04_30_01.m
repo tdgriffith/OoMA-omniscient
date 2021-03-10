@@ -1,6 +1,7 @@
 set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
+
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm''b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
 onlineratings=gen_onlineratings();
 filename_out=[];
@@ -20,6 +21,7 @@ for subject = 1:32 %parfor
     %mkdir(basename)
 
 %% Loop Over Trials
+
     parfor trial = 1:40
         % Trial Data
         %Y1=s01.data(trial,[3,4,31,27,28],:);
@@ -110,10 +112,11 @@ for subject = 1:32 %parfor
         h_indmap.ColorbarVisible=0;
         
         %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-        filename2=['export/heatmaps/robots_allch/S' num2str(subject),'T' num2str(trial), extension]
+        filename2=['/mnt/tris_files/export/heatmaps/robots_allch/S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename2)
         close all
         
+
 %         %heatmaps for people
 %         figure
 %         set(gcf,'units','points','position',[500,-200,700,500])
