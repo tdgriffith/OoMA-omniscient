@@ -2,10 +2,10 @@ set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
-onlineratings=gen_onlineratings();
+%onlineratings=gen_onlineratings();
 filename_out=[];
 %% Setup: Heatmaps for Robots NORMALIZED OMA DATA
-for subject = 14:14 %parfor
+for subject = 1:1 %parfor
     if subject <= 9
         load_name1=['s0',num2str(subject),'.mat']
     else
@@ -27,7 +27,7 @@ for subject = 14:14 %parfor
     %mkdir(basename)
 
 %% Loop Over Trials
-    parfor trial = 10:10
+    parfor trial = 1:1
         % Trial Data
         %Y1=s01.data(trial,[3,4,31,27,28],:);
         Y1=s01.data(trial,1:15,:);
@@ -119,7 +119,7 @@ for subject = 14:14 %parfor
         h_indmap.ColorbarVisible=0;
         
         %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))
-        filename2=['export/heatmaps/robots_allch/S' num2str(subject),'T' num2str(trial), extension]
+        filename2=['/mnt/tris_files/export/heatmaps/robots_allch/S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename2)
         close all
         
@@ -131,20 +131,20 @@ for subject = 14:14 %parfor
         h_indmap.ColorbarVisible=0;
         %h_indmap.XDisplayLabels={'Mode 1', 'Mode 2', 'Mode 3', 'Mode 4', 'Mode 5', 'Mode 6', 'Mode 7', 'Mode 8', 'Mode 9', 'Mode 10', 'Mode 11', 'Mode 12', 'Mode 13', 'Mode 14', 'Mode 15', 'Mode 16', 'Mode 17', 'Mode 18', 'Mode 19', 'Mode 20', 'Mode 21'}
         sgtitle(join((['Heatmaps for Subject',num2str(subject),'and Emotion: ' onlineratings(trial)])))
-        filename=['export/heatmaps/people_allch/S' num2str(subject),'T' num2str(trial), extension]
+        filename=['/mnt/tris_files/export/heatmaps/people_allch/S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename)
         close all
         
         MAC_plot=macmatrix(Phi_data{opt_order},Phi_cov{opt_order});
         figure
         macplot(MAC_plot)
-        filename=['export/heatmaps/people_allch/MAC_S' num2str(subject),'T' num2str(trial), extension]
+        filename=['/mnt/tris_files/export/heatmaps/people_allch/MAC_S' num2str(subject),'T' num2str(trial), extension]
         saveas(gcf,filename) 
         close all
         
         export_mat=[Phi_data{opt_order};zeta_data{opt_order}';fn_data{opt_order}']
         extension='.csv'
-        filename=['export/csv_allch/S' num2str(subject),'T' num2str(trial), extension]
+        filename=['/mnt/tris_files/export/csv_allch/S' num2str(subject),'T' num2str(trial), extension]
         csvwrite(filename,export_mat)
         
     end
