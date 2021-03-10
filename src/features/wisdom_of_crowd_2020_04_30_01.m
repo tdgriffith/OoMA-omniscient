@@ -23,7 +23,7 @@ C_NeXT_out=[];
 C_n4_out=[];
 
 for trial= 1:1
-    for subject = 1:1
+    for subject = 1:32
         if subject <= 9
             load_name1=['s0',num2str(subject),'.mat']
         else

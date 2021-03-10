@@ -2,13 +2,13 @@ set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
-onlineratings=gen_onlineratings();
 filename_out=[];
+export_inof=[];
 fs=128;
 T=1/fs;
 %% Setup: DMD Heatmaps for DEAP Dataset
 
-parfor subject = 1:32
+for subject = 1:1
     if subject <= 9
         load_name1=['s0',num2str(subject),'.mat']
     else
@@ -20,14 +20,14 @@ parfor subject = 1:32
     disp(subject);
     
     %% Loop Over Trials
-    for trial = 1:40
+    for trial = 1:1
         Y1=s01.data(trial,1:32,:);
         Y1=squeeze(Y1);
         extension='.png';
         fs=128;
         dt=1/fs;
         
-        r = 125; % number of modes, remember DMD generates complex conjugates
+        r = 20; % number of modes, remember DMD generates complex conjugates
         nstacks = 10; % number of stacks
         
         % construct the augmented, shift-stacked data matrices
@@ -145,9 +145,12 @@ parfor subject = 1:32
         
         figure
         set(gcf,'units','points','position',[500,-200,700,500])
-        fn_map=abs(transpose(omega/max(omega)));
+        [fn,zeta]=damp(omega);
+        fn_map=transpose(fn/max(fn));
         fn_map=fn_map(:,1:2:end);
-        h_indmap=heatmap([real(Phi_phys_unique);imag(Phi_phys_unique);fn_map],'CellLabelColor','none');
+        zeta_map=transpose(zeta/max(zeta));
+        zeta_map=zeta_map(:,1:2:end);
+        h_indmap=heatmap([real(Phi_phys_unique);imag(Phi_phys_unique);zeta_map;fn_map],'CellLabelColor','none');
         h_indmap.Colormap=parula;
         h_indmap.ColorbarVisible=0;        
         %sgtitle(join((['Heatmaps (Averages of A) for Emotion: ' onlineratings(trial)])))

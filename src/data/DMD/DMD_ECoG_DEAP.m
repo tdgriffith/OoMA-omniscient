@@ -1,16 +1,19 @@
 close all
 clear all
+set(groot, 'defaultAxesTickLabelInterpreter',"latex");
+set(groot, 'defaultLegendInterpreter', "latex");
+set(groot, 'defaulttextinterpreter',"latex");
 load_mat='s08.mat';
 s01=load(load_mat);
-trial=15;
-Y1=s01.data(trial,1:15,:);
+trial=20;
+Y1=s01.data(trial,1:16,:);
 Y1=squeeze(Y1);
-fs=160;
+fs=128;
 dt=1/fs;
 
 % parameters:
 r = 70; % number of modes, remember DMD generates complex conjugates
-nstacks = 15; % number of stacks
+nstacks = 20; % number of stacks
 
 % construct the augmented, shift-stacked data matrices
 Xaug = [];
@@ -33,12 +36,15 @@ subplot(1,2,1)
 semilogy(diag(S),'k','LineWidth',1.2)
 grid on
 xlabel('r')
-ylabel('Singular value, \sigmar_r')
+ylabel('Singular value, \sigmar_r', 'interpreter','latex')
+ylabel('Singular value')
 subplot(1,2,2)
 plot(cumsum(diag(S)/sum(diag(S))),'k','LineWidth',1.2)
 grid on
 xlabel('r')
 ylabel('Cum. Energy')
+line([236;236],[0;0.9898],'linestyle','--','Color','Black')
+line([0;236],[0.9898;0.9898],'linestyle','--','Color','Black')
 set(gcf,'Position',[100 100 550 240])
 
 % DMD modes 

@@ -1,0 +1,168 @@
+clear all, close all
+set(groot, 'defaultAxesTickLabelInterpreter',"latex");
+set(groot, 'defaultLegendInterpreter', "latex");
+set(groot, 'defaulttextinterpreter',"latex");
+%% Import Data- Restructuring
+%channel_locs=readtable('deap_imag_conv.csv');
+%% Grab Data: Trying DCT INSTEAD OF OMA 
+max_chans=16;
+subject = 1;
+if subject <= 9
+    load_name1=['s0',num2str(subject),'.mat']
+else
+    load_name1=['s',num2str(subject),'.mat']
+end
+subject1=subject;
+
+s01=load(load_name1);
+disp(subject);
+
+trial = 10;
+Y1=s01.data(trial,1:max_chans,:);
+Y1=squeeze(Y1);
+Y1=Y1';
+B_ts=[];
+2*4096/64;
+n=6;
+display('FFT Start');
+for i = 1:40*4096/64
+    B=fft2(Y1(i:i+(n-1),1:n)); %or dct2
+    B_vec=B(:);
+    B_vec=B_vec./norm(B_vec); %RISKY BOIS HERE
+    B_ts=[B_ts,B_vec];
+    clear B
+end
+display('FFT End');
+B_ts=B_ts.';
+figure
+subplot(2,2,1)
+plot(abs(B_ts(1:100,1:2)))
+subplot(2,2,2)
+plot(angle(B_ts(1:100,1:2)))
+subplot(2,2,3)
+plot(abs(B_ts(1:100,1:2)))
+subplot(2,2,4)
+plot(angle(B_ts(1:100,1:2)))
+
+extension='.png';
+fs=128;
+dt=1/fs;
+
+%% compute Derivative 
+eps = 0.0;      % noise strength
+dx=gradient(B_ts.',dt).';
+
+basis=gen_iH_basis(size(B_ts,2));
+% for i=1:length(basis)
+%     basis{i}=sparse(basis{i});
+% end
+
+basis_mat=cell2mat(permute(basis,[1,3,2]));
+
+basis_mat_sparse=[];
+for i=1:length(basis_mat)
+    basis_mat_sparse{i}=sparse(basis_mat(:,:,i));
+end
+
+Theta_cust=[];
+% for i = 1:length(basis)
+%     x_sigma = (basis{i})*B_ts.';
+%     Theta_cust = [Theta_cust,x_sigma.'];
+%     disp(i/length(basis))
+% end
+display('Theta Start');
+tic
+n=n^2;
+Theta_cust = sparse(reshape(reshape(permute(basis_mat,[2,1,3]),n,[]).'*B_ts.',[],n));
+%Theta_cust=Theta_cust.';
+Theta_cust=reshape(Theta_cust,n^3,[]).';
+Theta_cust=reshape(Theta_cust,[],length(basis));
+Theta=[real(Theta_cust);imag(Theta_cust)];
+toc
+display('Theta End');
+%% Estimate State Matrix
+display('Least Sq Start');
+tic
+dx3=[real(dx(:));imag(dx(:))];
+% G=gpuArray(Theta);
+% b=gpuArray(dx3);
+G=Theta;
+b=dx3;
+x=lsqr(G,b);
+%Xi=gather(x);
+
+lambda=1;
+smallinds = (abs(x)<lambda);   % find small coefficients
+biginds = ~smallinds;
+G=G(:,biginds);
+x=lsqr(G,b);
+basis(smallinds) = [];
+Xi=gather(x);
+
+toc
+display('Least Sq End');
+
+
+
+A_solve=zeros(size(B_ts,2),size(B_ts,2));
+for i = 1:length(basis)
+    A_solve=A_solve+(Xi(i)*basis{i});
+end
+A_solve;
+
+rhs2 = @(x)A_solve*x;   % ODE right hand side
+tspan=[0:dt:10];
+
+
+options = odeset('RelTol',1e-10,'AbsTol',1e-10*ones(1,size(B_ts,2)));
+
+[tB,xB]=ode45(@(t,x)rhs2(x),tspan,B_ts(1,:),options);  % integrate
+%% Plotus
+ch=1;
+ch2=1;
+figure
+subplot(2,2,1)
+plot(tspan(1:200),B_ts(1:200,ch:ch2),'LineWidth',1.5)
+hold on
+plot(tB(1:200),xB(1:200,ch:ch2),'k--','LineWidth',1.2)
+xlabel('Time (s)')
+ylabel('State, $x_k$')
+ylim([-1,1])
+title('Real. Comp. A')
+
+subplot(2,2,2)
+
+plot(tspan(1:200),imag(B_ts(1:200,ch:ch2)),'LineWidth',1.5)
+hold on
+plot(tB(1:200),imag(xB(1:200,ch:ch2)),'k--','LineWidth',1.2)
+xlabel('Time (s)')
+ylabel('State, $x_k$')
+ylim([-1,1])
+title('Imag. Comp. A')
+%recon_error=norm(xB(1:size(B_ts,1),:)-B_ts(:,:));
+
+
+subplot(2,2,3)
+plot(tspan(1:200),abs(B_ts(1:200,ch:ch2)),'LineWidth',1.5)
+hold on
+plot(tB(1:200),abs(xB(1:200,ch:ch2)),'k--','LineWidth',1.2)
+xlabel('Time (s)')
+ylabel('State, $x_k$')
+ylim([-1,1])
+title('Mag. Comp. x')
+
+subplot(2,2,4)
+
+plot(tspan(1:200),angle(B_ts(1:200,ch:ch2)),'LineWidth',1.5)
+hold on
+plot(tB(1:200),angle(xB(1:200,ch:ch2)),'k--','LineWidth',1.2)
+xlabel('Time (s)')
+ylabel('State, $x_k$')
+ylim([-4,4])
+title('Phase Comp. x')
+recon_error=norm(xB(1:100,:)-B_ts(1:100,:));
+sgtitle(['Real Data vs FFT Hamiltonian, Fro Norm: ', num2str(recon_error), ' Channel ', num2str(ch)])
+
+%% Density
+% B_ts=B_ts.';
+% B_xx1=B_ts(:,1)*B_ts(:,1)';

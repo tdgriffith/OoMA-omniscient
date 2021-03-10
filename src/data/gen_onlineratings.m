@@ -20,7 +20,7 @@ function onlineratings=gen_onlineratings()
     opts = setvaropts(opts, 1, "EmptyFieldRule", "auto");
 
     % Import the data
-    onlineratings = readtable("/scratch/user/griffith/eigenplots2/online_ratings.xls", opts, "UseExcel", false);
+    onlineratings = readtable("/scratch/user/griffith/eigenplots/online_ratings.xls", opts, "UseExcel", false);
 
     %% Convert to output type
     onlineratings = table2array(onlineratings);

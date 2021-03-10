@@ -2,7 +2,6 @@ set(groot, 'defaultAxesTickLabelInterpreter',"latex");
 set(groot, 'defaultLegendInterpreter', "latex");
 set(groot, 'defaulttextinterpreter',"latex");
 colors=['b' 'k' 'r' 'g' 'y' 'c' 'm' 'b' 'k' 'r' 'g' 'y' 'c' 'm'];
-onlineratings=gen_onlineratings();
 filename_out=[];
 fs=160;
 T=1/fs;
@@ -41,10 +40,10 @@ for subject = 1:109
     %% Loop Over Trials
     for trial = 1:14
         s01 = h5read(load_name_mat(trial,:),['/df/block0_values']); %
-        fix=length(s01)/3
-        Y_split{1}=s01(1:16,1:fix*1);
-        Y_split{2} = s01(1:16,fix:fix*2);
-        Y_split{3} = s01(1:16,fix*2:fix*3);
+        fix=length(s01)/4;
+        Y_split{1}=s01(1:32,1:fix*1);
+        Y_split{2} = s01(1:32,fix:fix*2);
+        Y_split{3} = s01(1:32,fix*2:fix*3);
         extension='.png';
         fs=160;
         dt=1/fs;
