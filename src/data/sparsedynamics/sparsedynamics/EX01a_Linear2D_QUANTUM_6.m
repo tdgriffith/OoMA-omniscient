@@ -12,7 +12,7 @@ set(groot, 'defaulttextinterpreter',"latex");
 % addpath('./utils');
 
 %% generate Data
-n=2;
+n=4;
 basis=gen_iH_basis(n);
 A = zeros(n,n);
 for i=1:length(basis)
@@ -26,7 +26,7 @@ rhs = @(x)A*x;   % ODE right hand side
 dt=.01;
 tspan=[0:dt:10];   % time span
 x0=rand(n,1)+j*rand(n,1); %initial conditions
-x0=[1,0];
+%x0=[1,0];
 %x0=[-1+1j;1-1j]
 options = odeset('RelTol',1e-10,'AbsTol',1e-10*ones(1,n));
 [t,x]=ode45(@(t,x)rhs(x),tspan,x0,options);  % integrate
